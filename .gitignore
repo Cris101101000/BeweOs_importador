@@ -1,0 +1,19 @@
+# Local
+.DS_Store
+*.local
+*.log*
+
+# Dist
+node_modules
+dist/
+bun.lock
+.env
+
+# Profile
+.rspack-profile-*/
+package-lock.json
+
+# IDE
+!.vscode/extensions.json
+.idea
+# .npmrc

@@ -1,0 +1,17 @@
+export enum OnboardingStep {
+	WELCOME = "welcome",
+	INTRO = "intro",
+	TRAINING_SOURCES = "training-sources",
+	PAIN_POINTS = "pain-points",
+	CONTACT_VOLUME = "contact-volume",
+	BUSINESS_VERTICAL = "business-vertical",
+	ANALYSIS_TRANSITION = "analysis-transition",
+	BUSINESS_DIAGNOSTIC = "business-diagnostic",
+	FIRST_MEDAL = "first-medal",
+	WHATSAPP_WOW = "whatsapp-wow",
+	SOCIAL_SHOWCASE = "social-showcase",
+	CHATBOT_SHOWCASE = "chatbot-showcase",
+	AUTOMATION_GRAND_FINALE = "automation-grand-finale",
+	BRAND_DEFINITION = "brand-definition",
+	BRAND_ADAPTATION = "brand-adaptation",
+}

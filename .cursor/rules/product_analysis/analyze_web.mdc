@@ -1,0 +1,747 @@
+---
+description: Metodología de análisis de productos web utilizando el MCP computer_use para un análisis exhaustivo del flujo de usuarios y navegación
+alwaysApply: false
+triggerPatterns: ["web", "frontend", "ui", "ux", "interface", "usuario", "navegación", "website", "aplicación web","chrome", "analyze web", "web analysis", "análisis web"]
+context: "Metodología de análisis UI/UX para interfaces de productos web, enfocada en navegación y extracción de insights"
+---
+
+# Reglas de Metodología de Análisis Web
+
+Aplica esta regla cuando uses el **MCP computer_use** para el análisis de interfaces de productos web para extraer insights valiosos de todos los flujos de usuario de un producto.
+
+## Objetivo Principal (OBLIGATORIO)
+- Analizar TODOS los flujos de usuario (user flows) de la webapp usando **computer_use MCP** con navegación por letras/teclado.
+- Producir TRES entregables coordinados:
+  1) `04_Web_Analysis/00_Doc_Auxiliar_Orden_Analisis_TEXT.md`: inventario de TODOS los clicks visibles por Página con estados "Pendiente de análisis" / "Analizado" y notas breves.
+  2) `05_Visual_Documentation_MERMAID.md`: diagramas Mermaid de flujos de usuario por página.
+  3) `04_Web_Analysis/User_Flows_By_Page_TEXT.md`: lista de funcionalidades y checklist por página.
+
+## Alcance y Límites (CRÍTICO)
+- Tipo de análisis:
+  - Producto completo: explorar toda la plataforma
+  - Módulo específico: NO salir del módulo especificado
+- Regla de oro: antes de cada click, confirmar que el destino pertenece al alcance (scope) actual. Si no, documentar como "fuera de scope" y no navegar.
+
+## Prerrequisitos
+
+### **📋 OBLIGATORIO: Verificar Progreso de Análisis Existente**
+
+**REQUISITO CRÍTICO**: Antes de comenzar cualquier análisis web, el agente DEBE verificar si existe progreso de análisis previo.
+
+#### **Protocolo de Continuación de Análisis:**
+1. **BUSCAR Doc Auxiliar existente**: Buscar `04_Web_Analysis/00_Doc_Auxiliar_Orden_Analisis_TEXT.md` en el directorio de análisis actual.
+2. **SI EXISTE Doc Auxiliar**:
+   - **LEER el documento completo** para entender el estado actual del análisis.
+   - **IDENTIFICAR página/sección actual** bajo análisis.
+   - **LOCALIZAR ítems "Pendiente de análisis"** en la página actual.
+   - **REANUDAR desde el primer ítem pendiente** en la sección de página activa.
+   - **CONTINUAR exploración sistemática** siguiendo la metodología existente.
+   - **ACTUALIZAR secciones existentes** en lugar de crear nuevas.
+3. **SI NO EXISTE Doc Auxiliar**:
+   - **CREAR nuevo Doc Auxiliar** siguiendo la metodología estándar.
+   - **INICIAR análisis fresco** desde la configuración de página inicial.
+
+#### **Requisitos de Continuación:**
+- **MANTENER estructura de página existente** y numeración en Doc Auxiliar.
+- **PRESERVAR análisis completado** (ítems marcados como "Analizado").
+- **ENFOCARSE en ítems pendientes** en la página actual antes de moverse a nuevas páginas.
+- **ACTUALIZAR estado** de "Pendiente de análisis" a "Analizado" a medida que se completan los ítems.
+- **AÑADIR nuevas páginas/secciones** solo después de completar los ítems pendientes de la página actual.
+- **REFERENCIAR hallazgos previos** al explorar flujos de trabajo conectados.
+
+#### **Entendimiento del Estado del Análisis:**
+Al leer el Doc Auxiliar existente, identificar:
+- **Página/sección activa actual** (marcada como "En progreso").
+- **Páginas/secciones completadas** (marcadas como "Completa").
+- **Ítems de análisis pendientes** dentro de la página actual.
+- **Metodología de análisis utilizada** (patrones de navegación por letras, métodos de interacción).
+- **Límites de alcance establecidos** (producto completo vs módulo específico).
+
+#### **Continuidad de Calidad:**
+- **VERIFICAR consistencia de alcance de análisis** con sesiones previas.
+- **MANTENER misma metodología de interacción** (navegación por letras Rango).
+- **PRESERVAR estándares de calidad de evidencia** (nomenclatura de capturas de pantalla, formato de documentación).
+- **CONTINUAR misma estructura de documentación** a través de todos los entregables.
+
+**⚠️ NUNCA INICIAR ANÁLISIS FRESCO** si existe Doc Auxiliar - siempre continuar desde donde lo dejó el análisis previo.
+
+### **🎯 OBLIGATORIO: Extensión de Navegador Rango**
+
+**REQUISITO CRÍTICO**: El agente DEBE usar la Extensión de Navegador Rango para TODAS las interacciones web.
+
+#### **Por qué Rango es OBLIGATORIO:**
+- **Mucho más confiable** que intentar hacer click en coordenadas de píxeles.
+- **Navegación basada en teclado** elimina errores de apuntado por coordenadas.
+- **Método de interacción consistente** a través de diferentes tamaños de pantalla y resoluciones.
+- **Navegación accesible** que funciona con cualquier configuración de navegador.
+
+#### **Protocolo de Uso de Rango:**
+1. **NUNCA usar clicks basados en coordenadas** (`left_click` con coordenadas) - ESTO ESTÁ ABSOLUTAMENTE PROHIBIDO.
+2. **SIEMPRE usar la navegación por teclado de Rango** para acceder a elementos.
+3. **Usar navegación Tab** para moverse entre elementos interactivos.
+4. **🔤 PRIORIDAD: Usar combinaciones de letras de Rango** cuando sean visibles en pantalla para acceso directo a elementos.
+5. **Usar teclas de flecha** para navegar menús desplegables y elementos de formulario.
+6. **Usar Enter/Espacio** para activar botones y controles de formulario.
+
+#### **🔤 OBLIGATORIO: Protocolo de Navegación por Teclado con Etiquetas de Letras:**
+- **PRIMERA OPCIÓN**: Siempre buscar superposiciones de letras mostradas en elementos clickeables (común en aplicaciones web modernas).
+- **ACCESO DIRECTO**: Escribir la combinación exacta de letras mostrada en pantalla para acceder a botones/enlaces (ej., "ad", "be", "cf").
+- **EFICIENCIA**: Las combinaciones de letras son más rápidas y confiables que la navegación por Tab.
+- **CONFIRMACIÓN VISUAL**: Muchas aplicaciones muestran combinaciones de 2 letras sobre elementos interactivos cuando la navegación por teclado está activa.
+- **ACTIVACIÓN INMEDIATA**: Simplemente escribir las letras - no se necesita tecla Enter para activación.
+- **DISPARADOR DE ACTIVACIÓN**: Algunas aplicaciones muestran etiquetas de letras después de presionar teclas específicas (como 'f', Tab, u otras teclas disparadoras).
+- **ESCANEO SISTEMÁTICO**: Siempre escanear en busca de etiquetas de letras antes de intentar cualquier otro método de interacción.
+
+#### **Verificación Pre-Análisis:**
+- **Crítico**: Verificar que la Extensión de Navegador Rango esté instalada antes de proceder.
+- Si falta la extensión Rango, detener inmediatamente y solicitar al usuario que la instale.
+- Solo proceder con la automatización del navegador cuando se confirme que la extensión está activa.
+- Probar funcionalidad básica de Rango (navegación Tab) antes de comenzar el análisis.
+
+### 📸 Estrategia de Capturas de Pantalla (OBLIGATORIO)
+- Objetivo: capturas SOLO de la webapp (sin chrome del navegador/SO).
+- Configuración: F11 (pantalla completa), verificar vista solo-webapp y documentarlo si no es posible.
+- Calidad: texto legible, contexto suficiente, encuadre consistente.
+- Regla extra: por cada Página, capturar una imagen con las letras visibles.
+
+#### 1.3 Protocolo de Inventario Inicial de Clicks (con letras)
+- En la Página inicial, activar/mostrar las etiquetas de letras (Rango).
+- Capturar screenshot con las letras visibles.
+- Transcribir TODOS los elementos accionables a `04_Web_Analysis/00_Doc_Auxiliar_Orden_Analisis_TEXT.md`, agrupados por "Página inicial".
+- Cada entrada debe registrar:
+  - Etiqueta de letras (p. ej., "ab")
+  - Texto del botón/elemento
+  - Estado inicial: "Pendiente de análisis"
+  - Tipo esperado: [Navegación / Desplegable / Acción directa]
+  - Nota breve (opcional)
+
+## Metodología de Análisis Exhaustivo
+
+### Cobertura por Alcance (OBLIGATORIO)
+- Producto completo: 100% de Páginas, Botones, Funcionalidades y Formularios.
+- Módulo específico: 100% dentro del módulo y 0% fuera del módulo.
+- Contexto de módulo: documentar límites, puntos de entrada y dependencias sin explorarlas.
+- Si no se cumple cobertura total en alcance → análisis incompleto y debe continuarse.
+
+### 1. Configuración y Descubrimiento
+1) Alcance: confirmar tipo (completo/módulo), límites, puntos de entrada y dependencias.
+2) Técnica: F11, verificar vista solo-webapp, screenshot inicial, scrolling completo (Page_Down/End/Home/Page_Up).
+3) Mapeo UI: listar botones/menús/forms/modales (incluyendo elementos revelados por scroll).
+4) Inventario inicial: crear `00_Doc_Auxiliar_Orden_Analisis_TEXT.md` con TODOS los accionables de la Página inicial usando letras.
+
+### 2. Estrategia de Exploración Profunda
+
+#### 2.0 Ciclo Iterativo de Análisis por Estados
+- **Objetivo CRÍTICO**: vaciar la cola de "Pendiente de análisis" hasta que todo quede "Analizado" al 100%.
+- **Prohibición**: NO crear documentación final hasta lograr 100% de completitud en Doc Auxiliar.
+- Algoritmo:
+  1) **LEER `00_Doc_Auxiliar_Orden_Analisis_TEXT.md` completo** para identificar el próximo elemento "Pendiente de análisis".
+  2) **NAVEGAR** a la página que contiene el elemento pendiente.
+  3) **ACTIVAR** el elemento usando su combinación de letras.
+  4) **Si abre desplegable/nueva página**:
+     - **INMEDIATAMENTE crear nueva sección** en Doc Auxiliar para la nueva página.
+     - **INVENTARIAR TODOS** los elementos interactivos visibles con estado "Pendiente de análisis".
+     - **USAR etiquetas de letras** para identificar cada elemento.
+     - **ACTUALIZAR** elemento original a "Analizado" con descripción del resultado.
+  5) **Si ejecuta acción directa**:
+     - **INMEDIATAMENTE marcar** elemento como "Analizado" en Doc Auxiliar.
+     - **AÑADIR descripción** brevísima del resultado (1-2 líneas máximo).
+  6) **REPETIR** hasta que página actual no tenga "Pendiente de análisis".
+  7) **CONTINUAR** con siguiente página que tenga elementos pendientes.
+  8) **NO PARAR** hasta que Doc Auxiliar muestre 100% de completitud (cero elementos pendientes).
+
+- **Formato de actualización obligatorio**:
+  - `Página inicial`: [ab] "Nuevo cliente" — Estado: **Analizado** — "Abre form creación cliente con campos nombre, email, teléfono"
+  - `Página creación de cliente`: [xy] "Guardar" — Estado: **Pendiente de análisis** → **Analizado** — "Guarda cliente y regresa a selección"
+
+**🚨 REGLA CRÍTICA**: El análisis NO está completo hasta que Doc Auxiliar muestre 0 elementos "Pendiente de análisis".
+
+#### **2.1 Análisis de Página Consciente del Alcance**
+
+**🚨 CRÍTICO: DETERMINAR ALCANCE DE ANÁLISIS PRIMERO**
+
+Antes de comenzar cualquier exploración, el agente DEBE determinar:
+- **ANÁLISIS DE PRODUCTO COMPLETO**: Cuando no se menciona un módulo específico → Explorar todo
+- **ANÁLISIS ESPECÍFICO DE MÓDULO**: Cuando se menciona un módulo específico → Mantenerse dentro de los límites del módulo SOLAMENTE
+
+---
+
+### **OPCIÓN A: Análisis de PRODUCTO COMPLETO (sin módulo específico mencionado)**
+
+**⚠️ USAR SOLO CUANDO**: El usuario solicita análisis de todo el producto/plataforma
+
+Para CADA página/vista descubierta a través de todo el producto:
+- **🔄 SCROLL DE PÁGINA OBLIGATORIO**: SIEMPRE hacer scroll por toda la página antes de documentar elementos
+  - Usar `Page_Down` para desplazarse por todo el contenido
+  - Usar `End` para llegar al final, luego `Home` para volver al inicio
+  - Asegurar que TODAS las áreas de contenido sean reveladas y capturadas
+- **Documentar todos los elementos interactivos**: botones, enlaces, formularios, selectores (incluyendo elementos revelados por scroll)
+- **Probar cada elemento clickeable**: modales, desplegables, superposiciones, wizards (encontrados mediante exploración completa de página)
+- **Explorar todas las opciones de menú**: menús contextuales, configuraciones, paneles de configuración (revisar área completa de página)
+- **Documentar comportamientos de formulario**: validación, estados de error, flujos de éxito (scroll para ver todas las secciones del formulario)
+- **Mapear flujos de modal/popup**: qué los activa, qué acciones permiten (incluyendo elementos bajo el pliegue)
+
+**🚨 REQUISITOS DE EXPLORACIÓN EXHAUSTIVA (Solo Producto Completo):**
+- **NINGÚN BOTÓN SIN CLICKEAR**: Cada botón a través de toda la plataforma debe ser presionado y documentado
+- **NINGUNA PÁGINA SIN VISITAR**: Cada enlace de navegación a través de toda la plataforma debe ser seguido y documentado
+- **NINGUNA FUNCIONALIDAD SIN PROBAR**: Cada capacidad de funcionalidad a través de toda la plataforma debe ser explorada y mapeada
+- **NINGÚN FORMULARIO SIN LLENAR**: Cada formulario a través de toda la plataforma debe ser probado con datos válidos/inválidos
+- **NINGÚN MODAL SIN EXPLORAR**: Cada popup, superposición y modal a través de toda la plataforma debe ser completamente explorado
+
+---
+
+### **OPCIÓN B: Análisis ESPECÍFICO DE MÓDULO (módulo específico mencionado)**
+
+**🚨 REQUISITO CRÍTICO**: Cuando se menciona un módulo específico (ej., "Calendario", "Agendamientos", "Booking"), el agente DEBE:
+
+**🚫 ACCIONES ABSOLUTAMENTE PROHIBIDAS:**
+- **NUNCA hacer click en navegación** que lleve a otros módulos (Dashboard, Configuración, Reportes, etc.)
+- **NUNCA seguir enlaces** fuera del alcance del módulo especificado
+- **NUNCA explorar otras secciones de la plataforma** independientemente de cuán interesantes parezcan
+- **NUNCA probar funcionalidad** que pertenezca a otros módulos
+
+**✅ ACCIONES REQUERIDAS SOLO DE MÓDULO:**
+Para CADA página/vista **DENTRO DEL MÓDULO ESPECIFICADO SOLAMENTE**:
+- **🔄 SCROLL DE MÓDULO OBLIGATORIO**: SIEMPRE hacer scroll por toda la página/área del módulo antes de documentar
+  - Usar `Page_Down` para revelar todo el contenido del módulo
+  - Usar `End` para llegar al final, luego `Home` para volver al inicio
+  - Asegurar que TODOS los elementos del módulo sean descubiertos mediante scrolling
+- **Enfocarse solo en elementos del módulo**: Documentar elementos interactivos dentro de los límites del módulo (incluyendo elementos revelados por scroll)
+- **Probar funcionalidad del módulo exhaustivamente**: Cada funcionalidad dentro del módulo debe ser probada (revisar área completa desplazable)
+- **🚫 RESPETO ESTRICTO DE LÍMITES**: NO hacer click en navegación que lleve fuera del módulo
+- **Documentar flujos de trabajo del módulo**: Mapear procesos completos dentro del alcance del módulo (scroll para ver todos los pasos del flujo)
+- **Notar dependencias externas**: Identificar pero no explorar conexiones a otros módulos (encontradas mediante exploración completa de página)
+
+**🎯 REQUISITOS DE EXPLORACIÓN ENFOCADA (Solo Módulo Específico):**
+- **NINGÚN BOTÓN DE MÓDULO SIN CLICKEAR**: Cada botón **DENTRO DEL MÓDULO** debe ser probado
+- **NINGUNA PÁGINA DE MÓDULO SIN VISITAR**: Cada vista **DENTRO DEL MÓDULO** debe ser documentada
+- **NINGUNA FUNCIONALIDAD DE MÓDULO SIN PROBAR**: Cada capacidad **DENTRO DEL MÓDULO** debe ser mapeada
+- **NINGÚN FORMULARIO DE MÓDULO SIN LLENAR**: Cada formulario **DENTRO DEL MÓDULO** debe ser probado
+- **🚫 ABSOLUTAMENTE NINGUNA EXPLORACIÓN ENTRE MÓDULOS**: Mantenerse dentro de los límites del módulo especificado
+
+**Seguimiento de Cobertura**: Mantener una lista de verificación de todos los elementos descubiertos dentro del alcance y marcarlos como analizados. Si algún elemento dentro del alcance permanece sin marcar, continuar análisis hasta lograr 100% de cobertura.
+
+#### **🚨 CRÍTICO: Protocolo de Cumplimiento de Límites de Módulo**
+
+**🚫 CERO TOLERANCIA PARA VIOLACIONES DE LÍMITES DE MÓDULO**
+
+Cuando se analiza un MÓDULO ESPECÍFICO (ej., "Agendamientos", "Calendario", "Booking"), el agente tiene **CERO TOLERANCIA** para explorar otras áreas de la plataforma.
+
+**🚫 SALIDAS DE MÓDULO ABSOLUTAMENTE PROHIBIDAS:**
+- **NUNCA hacer click en navegación** que lleve fuera del módulo especificado (Inicio, Dashboard, otros módulos)
+- **NUNCA probar elementos** que te llevarían lejos del alcance del módulo actual
+- **NUNCA seguir enlaces** a diferentes secciones de la plataforma durante el análisis del módulo
+- **RETORNAR INMEDIATAMENTE** al módulo si se navega fuera accidentalmente
+
+**🚨 EJEMPLOS DE NAVEGACIÓN ABSOLUTAMENTE PROHIBIDA:**
+- **Enlaces de Dashboard** → NUNCA hacer click si se analiza módulo de Calendario
+- **Configuración/Settings** → NUNCA hacer click a menos que sea configuración específica del módulo
+- **Reportes/Analytics** → NUNCA hacer click a menos que se analice módulo de Reportes específicamente
+- **Gestión de Usuarios** → NUNCA hacer click a menos que se analice módulo de Gestión de Usuarios
+- **Otras secciones de producto** → NUNCA explorar fuera del alcance del módulo especificado
+
+**✅ PROTOCOLO DE CUMPLIMIENTO DE LÍMITES DE MÓDULO:**
+
+**ANTES DE CADA CLICK** - Hacer estas preguntas:
+1. **"¿Este elemento pertenece al módulo especificado?"** → Si NO, NO hacer click
+2. **"¿Esto me llevará fuera del alcance del módulo?"** → Si SÍ, NO hacer click
+3. **"¿Esta navegación lleva a otra sección de la plataforma?"** → Si SÍ, NO hacer click
+4. **"¿Me estoy manteniendo dentro de los límites del módulo?"** → Si NO, NO hacer click
+
+**📋 EJEMPLOS DE IDENTIFICACIÓN DE MÓDULO:**
+- **"Analizando Agendamientos/Calendario"** → SOLO vistas de calendario, creación de citas, franjas horarias, confirmaciones de reserva
+- **"Analizando Gestión de Clientes"** → SOLO listas de clientes, perfiles, creación/edición de clientes, datos de clientes
+- **"Analizando Pagos/Facturación"** → SOLO procesamiento de pagos, facturación, métodos de pago, historial de facturación
+- **"Analizando Reportes"** → SOLO analíticas, reportes, dashboards, exportaciones de datos
+- **"Analizando Configuración"** → SOLO configuración, preferencias, ajustes del sistema
+
+**🚫 PREVENCIÓN ESTRICTA DE VIOLACIONES:**
+- **Documentar pero no hacer click** en cualquier navegación que lleve fuera del alcance del módulo
+- **Notar dependencias** sin explorarlas
+- **Marcar elementos inter-módulo** como "dependencia externa - no explorada"
+- **Mantenerse enfocado** en el módulo especificado independientemente de otras características interesantes
+
+**⚠️ SI HAY DUDA SOBRE LÍMITES DE MÓDULO** → **NO HACER CLICK** - Documentar la incertidumbre en su lugar
+
+---
+
+### 🚫 Ejemplos (Límites)
+- Si un enlace te lleva a otra área funcional (Dashboard, Configuración, Reportes, etc.) fuera del módulo, NO navegar. Documentar "fuera de scope".
+
+### 🎹 Protocolo de Interacción (OBLIGATORIO)
+- Jerarquía estricta:
+  1) Letras (primario). Si hay etiquetas, usarlas SIEMPRE.
+  2) Teclado (Tab/Shift+Tab/Enter/Escape y flechas) como fallback.
+  3) Click excepcional con justificación (solo si 1 y 2 fallan y es crítico).
+- Reglas clave:
+  - Prohibido usar `left_click` si hay letras visibles.
+  - **CRÍTICO: Si el cursor está dentro de un input de texto, ejecutar Tab para salir del input antes de continuar con navegación por letras o teclado.**
+  - Si el foco está en un input y las letras no funcionan, salir con Tab y reintentar.
+  - Cualquier click excepcional debe documentar: evidencia sin letras, fallo de Tab, y justificación de negocio.
+
+#### **📋 OBLIGATORIO: Protocolo de Gestión de Doc Auxiliar**
+
+**REQUISITO CRÍTICO**: El archivo `00_Doc_Auxiliar_Orden_Analisis_TEXT.md` es la **ÚNICA FUENTE DE VERDAD** para el progreso del análisis y debe mantenerse en tiempo real.
+
+##### **Reglas de Documentación en Tiempo Real:**
+
+1. **ACTUALIZACIÓN INMEDIATA DESPUÉS DE CADA INTERACCIÓN**:
+   - Después de probar CUALQUIER elemento, actualizar inmediatamente su estado en Doc Auxiliar
+   - Cambiar de "Pendiente de análisis" a "Analizado"
+   - Añadir descripción breve del resultado (1-2 líneas máximo)
+
+2. **PROTOCOLO DE DESCUBRIMIENTO DE NUEVA PÁGINA**:
+   - Cuando cualquier interacción abre una nueva página/modal/interfaz, crear inmediatamente nueva sección en Doc Auxiliar
+   - Inventariar TODOS los elementos interactivos visibles en nueva página con estado "Pendiente de análisis"
+   - Usar etiquetas de letras para identificar cada elemento de manera única
+
+2.1. **PROTOCOLO DE VIOLACIONES DE LÍMITES DE MÓDULO**:
+   - Si el elemento te lleva FUERA del alcance del módulo, marcar inmediatamente como "Analizado" con resultado: "FUERA DE SCOPE - No analizar (sale del módulo)"
+   - Retornar al módulo inmediatamente sin mayor exploración
+   - Continuar con el siguiente elemento pendiente dentro del alcance del módulo
+
+2.2. **PROTOCOLO DE LIMITACIONES TÉCNICAS**:
+   - Si el elemento falla consistentemente en responder a navegación Rango, teclado, o intentos de click después de 2-3 intentos, marcar como "Analizado" con resultado: "LIMITANTE TÉCNICA - Elemento no responde a interacción via Rango/keyboard"
+   - Si el elemento requiere input de usuario específico, credenciales, o datos externos no disponibles, marcar como "Analizado" con resultado: "LIMITANTE TÉCNICA - Requiere datos/credenciales específicas no disponibles"
+   - Si el elemento lleva a página rota, errores de carga, o mal funcionamiento del sistema, marcar como "Analizado" con resultado: "LIMITANTE TÉCNICA - Error del sistema o página no accesible"
+   - Continuar con el siguiente elemento pendiente sin solución de problemas extendida
+
+3. **REQUISITOS DE SEGUIMIENTO DE ESTADO**:
+   - **"Pendiente de análisis"** = Aún no probado
+   - **"Analizado"** = Probado con descripción de resultado
+   - Estado de página: **"En progreso"** = Tiene elementos pendientes, **"Completa"** = Todos los elementos analizados
+
+4. **CUMPLIMIENTO DE ANÁLISIS SISTEMÁTICO**:
+   - **NUNCA proceder a documentación final** hasta que Doc Auxiliar muestre 100% de completitud
+   - **NUNCA generar resúmenes ejecutivos** mientras queden elementos "Pendiente de análisis"
+   - **SIEMPRE priorizar completar página actual** antes de explorar nuevas páginas
+   - **DEBE completar análisis de TODAS las páginas** antes de considerar el análisis terminado
+
+5. **CRITERIOS DE COMPLETITUD DE ANÁLISIS**:
+   - ✅ TODAS las páginas marcadas como "Completa"
+   - ✅ CERO elementos con estado "Pendiente de análisis"
+   - ✅ TODOS los elementos interactivos descubiertos han sido probados
+   - ✅ Resumen de cobertura muestra 100% de completitud
+
+**⚠️ EL ANÁLISIS NO ESTÁ COMPLETO** hasta que Doc Auxiliar muestre 100% de cobertura sin elementos pendientes.
+
+#### **🔄 Protocolo ESTRICTO de Prueba de Interacción:**
+1. **OBLIGATORIO: ESCANEAR etiquetas de letras** - Buscar combinaciones de letras en TODOS los elementos interactivos visibles PRIMERO
+2. **REQUERIDO: USAR combinaciones de letras inmediatamente** - Escribir la combinación mostrada en elemento objetivo (ningún otro método permitido)
+3. **🚨 ARREGLO INPUT TEXTO: Tab out si es necesario** - Si la navegación por letras falla debido a foco en input de texto, presionar Tab para escapar campo de input
+4. **OBLIGATORIO: Protocolo de Escape de Input de Texto** - Cuando el cursor está dentro de cualquier campo de input de texto, SIEMPRE presionar Tab primero para salir del input antes de intentar navegación por letras
+5. **CONDICIONAL: Intentar navegación Tab** - SOLO cuando NO hay etiquetas de letras visibles en elemento objetivo
+6. **EXCEPCIONAL: Solicitar autorización click izquierdo** - SOLO cuando tanto navegación por letras y Tab fallan Y elemento es crítico
+7. **OBLIGATORIO: Documentar método de interacción** - Registrar qué método se usó y por qué
+8. **🔄 CRÍTICO: Actualizar Doc Auxiliar INMEDIATAMENTE** - Después de probar CUALQUIER elemento, actualizar `00_Doc_Auxiliar_Orden_Analisis_TEXT.md` estado de "Pendiente de análisis" a "Analizado" con descripción de resultado
+9. **CONTINUAR: Exploración sistemática** - Mantener enfoque primero-letras a través de todo el análisis
+
+#### **⚠️ PROTOCOLO DE CASOS EXCEPCIONALES:**
+
+**ESCENARIO 1: Elementos Clickeables Críticos SIN Acceso por Teclado**
+Cuando elementos interactivos carecen TANTO de etiquetas de letras COMO de acceso por navegación Tab:
+1. **DOCUMENTAR la brecha de accesibilidad** - Notar qué elementos carecen de accesibilidad por teclado
+2. **VERIFICAR falla de navegación Tab** - Confirmar que elemento no puede ser alcanzado vía Tab/Shift+Tab
+3. **JUSTIFICAR criticidad de negocio** - Explicar por qué este elemento es esencial para el análisis
+4. **SOLICITAR AUTORIZACIÓN para click izquierdo** - Documentar por qué clickear es la única opción
+5. **EJECUTAR click autorizado** - Usar click por coordenadas SOLO después de autorización
+6. **DOCUMENTAR uso de coordenadas** - Registrar circunstancias exactas y justificación
+7. **INCLUIR en evaluación de accesibilidad** - Marcar como preocupación mayor de accesibilidad
+
+**ESCENARIO 2: Elementos Arrastrables/No Interactivos**
+Para arrastrar y soltar, deslizadores, o elementos puramente visuales:
+1. **NO intentar NINGUNA interacción** - Estos elementos no pueden ser automatizados confiablemente
+2. **DOCUMENTAR apariencia visual** - Capturar capturas de pantalla detalladas de la interfaz
+3. **INFERIR comportamiento del diseño UI** - Analizar pistas visuales, tooltips y contexto
+4. **DESCRIBIR funcionalidad esperada** - Documentar suposiciones sobre operaciones de arrastre
+5. **NOTAR limitaciones de interacción** - Marcar como "comportamiento inferido, no probado"
+6. **INCLUIR en reporte de análisis** - Añadir sección dedicada para elementos no interactivos
+
+**JERARQUÍA ESTRICTA DE INTERACCIÓN (SIN EXCEPCIONES):**
+1. 🔤 **Navegación por combinación de letras** (PRIMARIO OBLIGATORIO - cuando visible)
+2. ⌨️ **Navegación por teclado** (SECUNDARIO OBLIGATORIO - cuando etiquetas de letras no disponibles)
+3. 🖱️ **Click por coordenadas autorizado** (SOLO EXCEPCIONAL - requiere justificación)
+4. 📋 **Inferencia de comportamiento** (elementos NO INTERACTIVOS solamente)
+
+#### **🚨 CUMPLIMIENTO OBLIGATORIO:**
+
+**LISTA DE VERIFICACIÓN OBLIGATORIA PRE-INTERACCIÓN:**
+Antes de CUALQUIER intento de interacción:
+- [ ] **Verificado navegación por letras activa** (extensión de navegador o característica nativa de app)
+- [ ] **Escaneado todo el viewport** por etiquetas de letras en elemento objetivo
+- [ ] **Confirmada jerarquía de interacción** - Combinaciones de letras primero, teclado segundo, mouse nunca (excepto excepcional)
+- [ ] **Preparada justificación** si interacción no-teclado podría ser necesaria
+
+**TOLERANCIA CERO A VIOLACIONES:**
+- **Usar click izquierdo cuando etiquetas de letras están disponibles** = REINICIO INMEDIATO DE ANÁLISIS
+- **Saltar prueba de navegación Tab** = REINICIO INMEDIATO DE ANÁLISIS
+- **Usar coordenadas sin justificación** = REINICIO INMEDIATO DE ANÁLISIS
+- **No documentar métodos de interacción** = ANÁLISIS CONSIDERADO INVÁLIDO
+
+**REQUISITOS DE DOCUMENTACIÓN:**
+Cada interacción debe ser documentada con:
+- **Método usado**: Combinaciones de letras, Navegación Tab, o click excepcional
+- **Justificación**: Por qué se eligió este método
+- **Identificación de elemento**: Descripción clara de con qué se interactuó
+- **Resultado**: Qué sucedió después de la interacción
+
+### ⚠️ Verificación de Scroll (CRÍTICO)
+- Nunca concluyas sin scroll completo (Page_Down/End/Home/Page_Up).
+- Orden: Scroll → Documentar → Analizar → Verificar.
+
+#### **2.2 Análisis de Wizards y Procesos de Múltiples Pasos**
+Para cualquier proceso de múltiples pasos (wizards, formularios, flujos de pago):
+- **Documentar cada paso individualmente**: inputs, validaciones, opciones de navegación
+- **Probar navegación atrás/adelante**: qué sucede cuando los usuarios regresan
+- **Explorar acciones laterales**: ayuda, cancelar, opciones de guardar borrador
+- **Documentar manejo de errores**: qué sucede con inputs inválidos
+- **Mapear flujos de finalización**: estados de éxito, páginas de confirmación
+
+#### **2.3 Características Administrativas y de Gestión**
+- **Explorar todas las funciones administrativas**: gestión de usuarios, configuración, ajustes
+- **Probar operaciones masivas**: selección múltiple, acciones por lotes, actualizaciones masivas
+- **Documentar características de reporte**: analíticas, exportaciones, dashboards
+- **Analizar sistemas de permisos**: acceso basado en roles, restricciones de características
+
+#### **2.4 Integración y Puntos de Contacto Externos**
+- **Mapear integraciones de terceros**: pasarelas de pago, logins sociales, APIs
+- **Documentar sistemas de notificación**: correos, SMS, notificaciones push
+- **Explorar características de importación/exportación**: migración de datos, respaldo/restauración
+- **Probar enlaces externos**: cómo se integran con el flujo principal
+
+#### **2.5 Análisis de Elementos No Interactivos**
+- **Identificar elementos arrastrables**: deslizadores, áreas de arrastrar y soltar, listas ordenables
+- **Documentar patrones de diseño visual**: indicadores UI para funcionalidad de arrastre
+- **Inferir comportamiento esperado**: analizar tooltips, pistas visuales y contexto
+- **Capturar estados múltiples**: estados visuales antes/durante/después de arrastre cuando sean visibles
+- **Notar consideraciones de accesibilidad**: métodos alternativos para usuarios sin mouse
+- **Documentar elementos solo-coordenadas**: clickeables que carecen de acceso por teclado
+
+### 3. Documentación de Flujo Mejorada
+
+#### 3.1 Mermaid por Página (entregable en `05_Visual_Documentation_MERMAID.md`)
+- Para CADA Página con accionables, documentar un diagrama Mermaid que describa:
+  - Nodo de Página
+  - Acciones/botones (con nombre legible)
+  - Resultados: nueva Página/visual, modal, o acción final
+  - Opcional: nodos de backend/estados cuando sea inferible
+- Plantilla base:
+```mermaid
+flowchart TD
+    PageA["🏠 Página A"] --> Btn1["➕ Acción 1"]
+    PageA --> Btn2["⚙️ Acción 2"]
+    Btn1 --> PageB["🏠 Página B"]
+    Btn2 --> Result1["🎯 Resultado"]
+```
+- Nota: El nivel de detalle debe corresponder a lo observado durante el ciclo iterativo (no asumir flujos no visitados).
+
+#### **3.2 Mapeo de Lógica de Negocio**
+Para cada acción de usuario, documentar:
+- **Disparador Frontend**: Qué elemento UI inicia la acción
+- **Procesamiento Backend**: Qué lógica de negocio se ejecuta
+- **Flujo de datos**: Cómo se mueve la información a través del sistema
+- **Cambios de estado**: Qué se actualiza en el estado de la aplicación
+- **Efectos secundarios**: Notificaciones, logs, integraciones disparadas
+
+#### **3.3 Documentación de Estado Integral**
+- **Estados de aplicación**: Cargando, error, éxito, estados vacíos
+- **Estados de usuario**: Logueado/deslogueado, permisos, preferencias
+- **Estados de datos**: Borrador, pendiente, aprobado, rechazado, archivado
+- **Estados del sistema**: Online/offline, mantenimiento, carga alta
+
+### 4. Áreas de Análisis Específicas Web
+
+#### **4.1 Patrones de Experiencia de Usuario**
+- **Patrones de navegación**: Cómo se mueven los usuarios entre secciones
+- **Arquitectura de información**: Organización y jerarquía de contenido
+- **Consistencia de diseño visual**: Componentes UI y patrones de estilo
+- **Comportamiento responsivo**: Diferencias Móvil vs escritorio
+- **Características de accesibilidad**: Soporte lector de pantalla, navegación por teclado
+
+#### **4.2 Diseño de Interacción**
+- **Micro-interacciones**: Estados hover, transiciones, animaciones
+- **Mecanismos de retroalimentación**: Mensajes de éxito, manejo de errores, estados de carga
+- **Divulgación progresiva**: Cómo se gestiona y revela la complejidad
+- **Onboarding de usuario**: Cómo aprenden la interfaz los nuevos usuarios
+
+#### **4.3 Rendimiento y Observaciones Técnicas**
+- **Tiempos de carga**: Velocidad de carga de página y rendimiento percibido
+- **Manejo de errores**: Cómo maneja la interfaz las fallas
+- **Solicitudes de red**: Llamadas API observables y carga de datos
+- **Compatibilidad de navegador**: Notas de comportamiento entre navegadores
+
+## Salida de Análisis y Documentación
+
+### Entregables obligatorios
+1) `04_Web_Analysis/00_Doc_Auxiliar_Orden_Analisis_TEXT.md`
+   - Propósito: fuente de verdad del inventario de clicks por Página.
+   - Estructura: agrupación por Página; cada elemento con [letras], texto, estado ("Pendiente de análisis" / "Analizado"), resultado breve.
+   - Estado al finalizar: 0 pendientes; todo "Analizado" o documentada la imposibilidad (con evidencia).
+
+2) `05_Visual_Documentation_MERMAID.md`
+   - Propósito: diagrama(s) Mermaid por Página con los flujos de usuario descubiertos.
+   - Referencias: enlazar a screenshots clave y a la sección correspondiente del Doc Auxiliar.
+
+3) `04_Web_Analysis/User_Flows_By_Page_TEXT.md`
+   - Propósito: funcionalidades y checklist por Página (incluye URL/acceso).
+   - Debe reflejar exactamente lo analizado (derivado del Doc Auxiliar) y servir para comparativa entre productos.
+
+#### Plantilla para `User_Flows_By_Page_TEXT.md`
+```markdown
+# Flujos de Usuario por Página
+
+## [Nombre de Página/Sección]
+- **URL/Acceso**: [Cómo se llega; referencia a Página anterior/botón]
+- **Acciones (estado)**:
+  - [ab] "Nuevo cliente" — Analizado — "Abre form de creación"
+  - [cd] "Filtrar" — Analizado — "Desplegable de filtros"
+- **Flujos de Usuario**:
+  1. [Nombre flujo]: [Paso 1] → [Paso 2] → [Resultado]
+- **Funcionalidades (Checklist)**:
+  - [ ] [Funcionalidad 1]
+  - [ ] [Funcionalidad 2]
+- **Evidencia**:
+  - Doc Auxiliar: [sección y anclaje]
+  - Screenshots: [rutas]
+
+## [Siguiente Página/Sección]
+...
+```
+
+### Plantilla: `04_Web_Analysis/00_Doc_Auxiliar_Orden_Analisis_TEXT.md`
+```markdown
+# Doc Auxiliar — Orden de Análisis (Inventario de Clicks por Página)
+
+## Página: [Nombre de la Página] — Estado: [En progreso / Completa]
+- URL/Acceso: [Ruta o botón que la abre]
+- Accionables:
+  - [ab] "Texto del botón/enlace" — Estado: Pendiente de análisis — Tipo: [Navegación/Desplegable/Acción] — Nota: [opcional]
+  - [cd] "Texto …" — Estado: Analizado — Resultado: "Descripción breve (1 línea)"
+- Notas:
+  - [Observaciones relevantes]
+
+## Página: [Siguiente Página]
+...
+```
+
+### Integración de Documentación
+- Usar `documentation_web.mdc` para estandarizar resultados y métricas comparables.
+- Salidas clave: Resumen, Página-por-Página, Flujos de Usuario, Evaluación UX, diagramas Mermaid, Notas técnicas.
+
+### **Colección de Screenshots y Evidencia**
+Durante el análisis, recolectar evidencia visual integral siguiendo estos estándares:
+
+#### **📸 Protocolo de Colección de Screenshots**
+- **CAPTURAS SOLO-WEBAPP**: Nunca incluir chrome del navegador, encabezados, o elementos del SO (usar F11 pantalla completa)
+- **COBERTURA DE ESTADO INTEGRAL**: Documentar cada estado UI, formulario, modal, error y escenario de éxito
+- **COMPOSICIÓN LIMPIA**: Enfocarse exclusivamente en el contenido de la interfaz de la aplicación
+- **LISTO PARA ANOTACIÓN**: Capturar screenshots adecuados para resaltar y anotar
+- **LETRAS VISIBLES**: Capturar al menos una screenshot por Página con las etiquetas de letras visibles para evidenciar el inventario de accionables
+
+#### **Categorías de Evidencia a Capturar**
+1. **🏠 Estados de Página**: Cada página/vista única dentro del alcance del análisis
+2. **📝 Estados de Formulario**: Vacío, lleno, errores de validación, estados de éxito
+3. **🔧 Estados de Modal**: Todos los diálogos popup, superposiciones, menús desplegables
+4. **⚠️ Estados de Error**: Mensajes de error, diálogos de advertencia, escenarios de falla
+5. **✅ Estados de Éxito**: Páginas de confirmación, mensajes de éxito, flujos de finalización
+6. **🎯 Estados Interactivos**: Indicadores de foco, efectos hover, elementos activos
+
+## Integración con Reglas de Producto
+
+### **Análisis Complementario**
+Cuando se usa con reglas específicas del producto (ej., `analyze_product_booking`):
+- **Enfocarse en implementación UI** de la lógica de negocio documentada en reglas de producto
+- **Cruzar referencias de características** entre requerimientos de negocio y realidad de interfaz
+- **Validar flujos de trabajo de usuario** contra comportamiento esperado del producto
+- **Identificar brechas UI/UX** no cubiertas en análisis de lógica de negocio
+
+### **Integración de Contexto**
+- **Referenciar contexto global de producto** para análisis enfocado
+- **Alinear con prioridades específicas del producto** y criterios de éxito
+- **Contribuir insights específicos web** al entendimiento general del producto
+
+### **Integración de Documentación**
+- **Usar `documentation_web.mdc`** para documentación de resultados integral
+- **Aplicar métricas estandarizadas** para capacidades de comparación entre productos
+- **Crear entregables profesionales** siguiendo estándares de documentación universales
+
+## Protocolo de Finalización de Análisis y Documentación Final
+
+### **🚫 PROHIBICIÓN: Documentación Final Antes de 100% de Completitud**
+
+**ACCIONES ABSOLUTAMENTE PROHIBIDAS** hasta que el análisis alcance 100% de completitud:
+
+- ❌ **Crear Resumen Ejecutivo** (`01_Executive_Summary_TEXT.md`)
+- ❌ **Generar Reporte de Flujos de Usuario** (`User_Flows_By_Page_TEXT.md`)
+- ❌ **Crear Diagramas Mermaid** (`05_Visual_Documentation_MERMAID.md`)
+- ❌ **Escribir Contexto de Producto** (`02_Product_Context_TEXT.md`)
+- ❌ **Cualquier entregable marcado como "final"**
+- ❌ **Actualizar estado de TODO a "completado"** para tareas de análisis
+
+### **✅ LISTA DE VERIFICACIÓN DE ANÁLISIS COMPLETADO**
+
+Antes de proceder a la documentación final, el agente DEBE verificar:
+
+1. **Doc Auxiliar 100% Completo**:
+   - [ ] Leer archivo completo `00_Doc_Auxiliar_Orden_Analisis_TEXT.md`
+   - [ ] Verificar CERO elementos muestran estado "Pendiente de análisis"
+   - [ ] Confirmar TODAS las páginas marcadas como "Completa"
+   - [ ] Revisar resumen de cobertura muestra 100%
+
+2. **Verificación de Cobertura Sistemática**:
+   - [ ] Cada página descubierta ha sido completamente explorada
+   - [ ] Cada elemento interactivo ha sido probado
+   - [ ] Todos los flujos trazados de extremo a extremo
+   - [ ] No quedan caminos de navegación sin explorar
+
+3. **Revisión de Aseguramiento de Calidad**:
+   - [ ] Todas las entradas "Analizado" tienen descripciones de resultado
+   - [ ] Nuevos descubrimientos de página debidamente documentados
+   - [ ] Interacciones de elementos debidamente registradas
+   - [ ] Brechas de cobertura identificadas y abordadas
+
+### **📝 ORDEN DE GENERACIÓN DE DOCUMENTACIÓN FINAL**
+
+**SOLO DESPUÉS DE VERIFICAR 100% COMPLETITUD**, generar en este orden:
+
+1. **Primero**: `05_Visual_Documentation_MERMAID.md` - Diagramas de flujo de trabajo
+2. **Segundo**: `User_Flows_By_Page_TEXT.md` - Documentación de funcionalidad
+3. **Tercero**: `02_Product_Context_TEXT.md` - Documentación de contexto
+4. **Último**: `01_Executive_Summary_TEXT.md` - Resumen estratégico
+
+### **🔄 PROTOCOLO DE ANÁLISIS CONTINUO**
+
+**MIENTRAS EL ANÁLISIS ESTÉ INCOMPLETO** (existe algún "Pendiente de análisis"):
+
+1. **LEER Doc Auxiliar** para encontrar siguiente elemento pendiente
+2. **NAVEGAR a página** conteniendo elementos pendientes
+3. **ACTIVAR siguiente elemento pendiente** usando navegación por letras
+4. **ACTUALIZAR Doc Auxiliar** inmediatamente con resultado
+5. **REPETIR** hasta que no queden elementos pendientes
+
+**El agente NO DEBE DETENER el análisis hasta lograr 100% de completitud.**
+
+## Estándares de Calidad de Análisis
+
+### **Requisitos de Completitud**
+
+**🚨 CRITERIOS OBLIGATORIOS DE COBERTURA 100%:**
+- ✅ **Cada elemento clickeable probado y documentado** - SIN EXCEPCIONES
+- ✅ **Cada campo de formulario y regla de validación identificada** - TODOS los inputs probados
+- ✅ **Cada modal, desplegable y superposición explorada** - TODO contenido popup documentado
+- ✅ **Cada opción de menú y camino de navegación mapeado** - TODOS los enlaces seguidos
+- ✅ **Cada estado de error y caso borde documentado** - TODOS los escenarios de falla probados
+- ✅ **Cada interacción de backend inferida y documentada** - TODAS las llamadas API mapeadas
+- ✅ **Cada página/vista capturada y analizada** - TODAS las áreas accesibles exploradas
+- ✅ **Cada funcionalidad de característica verificada** - TODAS las capacidades demostradas
+- ✅ **Cada flujo de usuario completado** - TODOS los flujos de tarea probados extremo a extremo
+
+**⚠️ PROTOCOLO DE ANÁLISIS INCOMPLETO:**
+Si CUALQUIER elemento, página, característica o botón permanece sin explorar:
+1. **CONTINUAR ANÁLISIS** hasta lograr cobertura 100%
+2. **DOCUMENTAR BRECHAS DE COBERTURA** con referencias específicas a elemento/página
+3. **PRIORIZAR ÁREAS INCOMPLETAS** en siguiente sesión de análisis
+4. **MARCAR ANÁLISIS COMO PARCIAL** hasta completar cobertura total
+
+### **Estándares de Evidencia de Análisis**
+- **Screenshot de cada hallazgo significativo** con capturas limpias solo-webapp
+- **Documentar métodos de interacción** usados para cada elemento (etiquetas de letras, navegación Tab, etc.)
+- **Registrar patrones de navegación** y secuencias de flujo de usuario
+- **Capturar todos los estados UI** incluyendo errores, carga y escenarios de éxito
+- **Notar observaciones de accesibilidad** y capacidades de navegación por teclado
+- **Cuantificar métricas de experiencia de usuario** (recuentos de clicks, números de paso, tiempos de carga)
+
+### ✅ Esenciales de Cumplimiento
+- Pre: F11, Rango activo y visible, Tab probado, setup de screenshots, entender protocolo anti-click.
+- Durante: letras primero, teclado como fallback, cero clicks no justificados, capturas limpias, registrar método de interacción.
+- Post: validar cero clicks no autorizados, priorización de letras, justificación de excepciones y portfolio limpio de capturas.
+
+### ❌ Violaciones Críticas
+- Click con letras visibles, click por coordenadas sin justificación, omitir documentación del método de interacción.
+
+### 📋 Protocolo para Click Excepcional
+1) Evidencia sin letras en el elemento.
+2) Demostrar fallo de Tab/teclado.
+3) Justificar criticidad de negocio.
+4) Ejecutar y documentar con screenshot.
+
+**El objetivo es hacer de la navegación por teclado y uso de etiquetas de letras el defecto absoluto, con click de mouse como último recurso requiriendo justificación formal.**
+
+## Restricciones y Directrices
+
+### **Metodología de Exploración**
+
+#### **🎯 Protocolo de Cobertura Sistemática**
+1. CREAR/ACTUALIZAR el Doc Auxiliar con todos los elementos accionables por Página (con letras).
+2. ETIQUETAR cada elemento como "Pendiente de análisis" o "Analizado" (con resultado breve).
+3. ITERAR hasta que no existan pendientes en la Página activa; continuar con la siguiente.
+4. VERIFICAR que el inventario coincide con las evidencias (screenshots con letras).
+5. DOCUMENTAR cualquier elemento inaccesible por teclado y justificar excepcionalidades.
+
+#### **📋 Requisitos de Seguimiento de Cobertura**
+- **Enfoque sistemático**: No saltar ninguna funcionalidad descubrible
+- **Documentar sobre la marcha**: Screenshot y notar cada hallazgo significativo
+- **Probar límites**: Intentar inputs inválidos, casos borde, escenarios de error
+- **Mapear dependencias**: Notar cómo las características se interconectan y dependen unas de otras
+- **Conciencia de tiempo**: Notar cualquier comportamiento basado en tiempo (auto-guardado, timeouts, etc.)
+- **Verificación de cobertura**: Mantener lista de verificación de TODOS los elementos descubiertos y su estado de análisis
+
+#### **⛔ NO SE PERMITE ANÁLISIS PARCIAL**
+- El análisis no puede considerarse completo a menos que el 100% de elementos descubribles sean explorados
+- Si restricciones de tiempo previenen análisis completo, documentar explícitamente brechas de cobertura
+- Proveer plan específico para completar análisis restante en sesiones de seguimiento
+- Marcar todos los entregables como "ANÁLISIS PARCIAL" hasta lograr cobertura total
+
+### **Restricciones Éticas y Técnicas**
+- Automatización de navegador **solo** para propósitos de analítica
+- **Mantenerse dentro de la página web/dominio** propuesto por el usuario
+- **Análisis de solo lectura**: Sin manipulación de datos o creación de cuentas (a menos que sea requerido para flujo)
+- **Respetar límites de tasa**: No abrumar servidores con solicitudes
+- **Consciente de privacidad**: No intentar acceder a áreas no autorizadas
+- **Enfoque en análisis UX**: No recopilación de inteligencia competitiva
+
+---
+
+## 🔑 **RESUMEN DE REQUISITOS CLAVE DE METODOLOGÍA**
+
+### **🎯 ETIQUETA DE LETRAS Y NAVEGACIÓN POR TECLADO ABSOLUTAMENTE OBLIGATORIA**
+- **🔤 Combinaciones de letras son ÚNICO método PRIMARIO** - SIEMPRE escanear y usar superposiciones de letras primero, SIN EXCEPCIONES
+- **⌨️ Navegación ESTRICTA solo-teclado priorizada** - Seguir jerarquía de interacción inflexible
+- **🚫 CLICK IZQUIERDO ABSOLUTAMENTE PROHIBIDO** - Excepto en casos excepcionales con autorización completa y justificación
+- **Navegación por letras es REQUISITO CRÍTICO** - Extensiones de navegador (como Rango) o características nativas de app
+- **Exploración sistemática OBLIGATORIA primero-letras** - Cada elemento DEBE ser accedido vía etiquetas de letras cuando estén disponibles
+- **Navegación Tab como fallback SECUNDARIO ESTRICTO** - Usar Tab/Shift+Tab SOLO cuando NO hay etiquetas de letras visibles
+- **Click por coordenadas SOLO EXCEPCIONAL** - Requiere autorización explícita, documentación y justificación
+- **Inferencia de elemento arrastrable SOLO** - Documentar comportamiento sin intentar NINGUNA interacción
+- **Documentación de interacción INTEGRAL** - Notar método exacto (Letras/Tab/Click Excepcional/Inferido) usado para CADA elemento
+
+### **📸 CAPTURAS DE PANTALLA LIMPIAS OBLIGATORIAS**
+- **Capturas solo-webapp REQUERIDAS** - NUNCA encabezados de Chrome, barras de tareas, o chrome del navegador
+- **Contexto de aplicación completo** - TODOS los elementos UI relevantes visibles
+- **Estándares de calidad consistentes** - Texto legible, elementos completos, tiempo óptimo
+- **Cobertura de estado integral** - CADA estado UI documentado visualmente
+
+### **🔒 CUMPLIMIENTO DE CERO TOLERANCIA**
+- **Verificación pre-análisis OBLIGATORIA** - Lista de verificación DEBE ser completada antes de comenzar
+- **Monitoreo de CERO TOLERANCIA durante análisis** - Cumplimiento estricto continuo con metodología Rango
+- **Confirmación INTEGRAL post-análisis** - Verificación total antes de considerar análisis completo
+- **CUALQUIER no-cumplimiento = REINICIO INMEDIATO DE ANÁLISIS** - Debe reiniciar completamente con metodología conforme
+- **Click izquierdo no autorizado = Análisis INVÁLIDO** - Análisis reiniciado inmediatamente
+
+### **⚡ BENEFICIOS DE METODOLOGÍA SUPERIOR**
+- **Interacciones 100% confiables** - Navegación por teclado elimina TODOS los errores de coordenadas
+- **Flujo de trabajo de análisis óptimo** - Nunca adivinar posiciones de elementos o configuraciones de pantalla
+- **Insights de accesibilidad mejorados** - Revela capacidades completas de navegación por teclado de webapp
+- **Documentación profesional** - Capturas de pantalla limpias enfocadas exclusivamente en contenido de aplicación
+- **Verificación de cumplimiento de accesibilidad** - Prueba usabilidad de teclado como parte de metodología de análisis
+
+### **🚨 MARCO DE AUTORIZACIÓN CRÍTICO**
+- **Autorización excepcional de click izquierdo** - EXTREMADAMENTE RARO, requiere proceso formal de justificación
+- **Documentación de criticidad de negocio** - Elemento debe ser esencial para completitud de análisis
+- **Señalización de brecha de accesibilidad** - Cualquier elemento no-teclado marcado como preocupación mayor de accesibilidad
+- **Agotamiento de método alternativo** - TODOS los métodos de teclado deben ser probados y fallados antes de autorización
+- **Evidencia de screenshot requerida** - Prueba de indisponibilidad de Rango y falla de navegación por teclado
+
+---
+
+**Esta regla de metodología de análisis web proporciona exploración sistemática de interfaces web usando navegación Rango obligatoria y protocolos de captura de pantalla optimizados. Para documentación integral de resultados de análisis, usar la regla complementaria `documentation_web.mdc` que proporciona plantillas estandarizadas y formatos de reporte.**

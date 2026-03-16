@@ -1,0 +1,37 @@
+export enum EnumServiceMeasureUnit {
+	Hora = "hora",
+	Minuto = "minuto",
+	Dia = "dia",
+	Semana = "semana",
+	Mes = "mes",
+	Ano = "ano",
+}
+
+// Mapeo de palabras comunes a unidades de API
+export const DURATION_WORD_MAPPING: Record<string, EnumServiceMeasureUnit> = {
+	hora: EnumServiceMeasureUnit.Hora,
+	horas: EnumServiceMeasureUnit.Hora,
+	hour: EnumServiceMeasureUnit.Hora,
+	hours: EnumServiceMeasureUnit.Hora,
+	minuto: EnumServiceMeasureUnit.Minuto,
+	minutos: EnumServiceMeasureUnit.Minuto,
+	minute: EnumServiceMeasureUnit.Minuto,
+	minutes: EnumServiceMeasureUnit.Minuto,
+	min: EnumServiceMeasureUnit.Minuto,
+	día: EnumServiceMeasureUnit.Dia,
+	dias: EnumServiceMeasureUnit.Dia,
+	day: EnumServiceMeasureUnit.Dia,
+	days: EnumServiceMeasureUnit.Dia,
+	semana: EnumServiceMeasureUnit.Semana,
+	semanas: EnumServiceMeasureUnit.Semana,
+	week: EnumServiceMeasureUnit.Semana,
+	weeks: EnumServiceMeasureUnit.Semana,
+	mes: EnumServiceMeasureUnit.Mes,
+	meses: EnumServiceMeasureUnit.Mes,
+	month: EnumServiceMeasureUnit.Mes,
+	months: EnumServiceMeasureUnit.Mes,
+	año: EnumServiceMeasureUnit.Ano,
+	años: EnumServiceMeasureUnit.Ano,
+	year: EnumServiceMeasureUnit.Ano,
+	years: EnumServiceMeasureUnit.Ano,
+};

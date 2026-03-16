@@ -1,0 +1,44 @@
+{
+  "compilerOptions": {
+    "lib": ["DOM", "ES2020"],
+    "jsx": "react-jsx",
+    "target": "ES2020",
+    "noEmit": true,
+    "skipLibCheck": true,
+    "useDefineForClassFields": true,
+
+    /* modules */
+    "module": "ESNext",
+    "isolatedModules": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+
+    /* type checking */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+
+    /* alias paths */
+    "baseUrl": ".",
+    "paths": {
+      "@shared/*": ["src/shared/*"],
+      "@shared/features/*": ["src/shared/features/*"],
+      "@auth/*": ["src/auth/*"],
+      "@settings/*": ["src/settings/*"],
+      "@dashboard/*": ["src/dashboard/*"],
+      "@clients/*": ["src/clients/*"],
+      "@catalog/*": ["src/catalog/*"],
+      "@integrations/*": ["src/integrations/*"],
+      "@layout/*": ["src/layout/*"],
+      "@pricing/*": ["src/pricing/*"],
+      "@ai-tags/*": ["src/ai-tags/*"],
+      "@smart-tags/*": ["src/smart-tags/*"],
+      "@lindaConfig/*": ["src/lindaConfig/*"],
+      "@social-networks/*": ["src/social-networks/*"],
+      "@campaigns/*": ["src/campaigns/*"],
+      "@http": ["src/shared/infrastructure/services/api-http.service.ts"]
+    }
+  },
+  "include": ["src"]
+}

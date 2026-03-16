@@ -1,0 +1,17 @@
+export enum EnumBusinessCategory {
+	Retail = "retail",
+	Restaurants = "restaurants",
+	Services = "services",
+	Healthcare = "healthcare",
+	Education = "education",
+	Technology = "technology",
+	Finance = "finance",
+	RealEstate = "real_estate",
+	Automotive = "automotive",
+	Manufacturing = "manufacturing",
+	Agriculture = "agriculture",
+	Construction = "construction",
+	Transportation = "transportation",
+	Entertainment = "entertainment",
+	Other = "other",
+}

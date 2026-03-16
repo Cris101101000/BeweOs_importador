@@ -1,0 +1,10 @@
+export { useClientById } from "./use-client-by-id.hook";
+export { useClientNotes } from "./use-client-notes.hook";
+export { useClientCommunications } from "./use-client-communications.hook";
+export { useClientDataFetch } from "./use-client-data-fetch.hook";
+export { useClientModals } from "./use-client-modals.hook";
+export { useClientActions } from "./use-client-actions.hook";
+export { useHistoryActions } from "./use-history-actions.hook";
+export { useAiTags } from "./use-ai-tags.hook";
+export { useClientAssignedTags } from "./use-client-assigned-tags.hook";
+export { useClientTagsUpdate } from "./use-client-tags-update.hook";

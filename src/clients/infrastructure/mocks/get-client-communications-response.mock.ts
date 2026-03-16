@@ -1,0 +1,70 @@
+import type { GetClientCommunicationsResponseDto } from "../dtos/get-client-communications.dto";
+
+export const getClientCommunicationsResponseMock: GetClientCommunicationsResponseDto[] =
+	[
+		{
+			id: "comm-1",
+			companyId: "company-123",
+			clientId: "client-123",
+			type: "email",
+			channel: "email",
+			direction: "outbound",
+			status: "read",
+			subject: "Seguimiento de propuesta comercial",
+			content:
+				"Email de seguimiento para revisar la propuesta comercial enviada previamente",
+			duration: 0,
+			durationInMinutes: 0,
+			statusDate: "2024-06-21T09:00:00Z",
+			recipientPhone: "+1234567890",
+			recipientEmail: "tony.reichert@example.com",
+			campaignId: "",
+			createdAt: "2024-06-21T09:00:00Z",
+			updatedAt: "2024-06-21T09:00:00Z",
+			createdBy: "user-456",
+		},
+		{
+			id: "comm-2",
+			companyId: "company-123",
+			clientId: "client-123",
+			type: "call",
+			channel: "phone",
+			direction: "outbound",
+			status: "answered",
+			subject: "Llamada de seguimiento comercial",
+			content:
+				"Llamada telefónica para hacer seguimiento del proceso comercial",
+			duration: 900,
+			durationInMinutes: 15,
+			statusDate: "2024-06-21T15:30:00Z",
+			recipientPhone: "+1234567890",
+			recipientEmail: "tony.reichert@example.com",
+			campaignId: "",
+			createdAt: "2024-06-21T15:30:00Z",
+			updatedAt: "2024-06-21T15:30:00Z",
+			createdBy: "user-456",
+		},
+		{
+			id: "comm-3",
+			companyId: "company-123",
+			clientId: "client-123",
+			type: "whatsapp",
+			channel: "whatsapp",
+			direction: "outbound",
+			status: "pending",
+			subject: "Mensaje WhatsApp",
+			content: "Mensaje de WhatsApp enviado, esperando respuesta",
+			duration: 0,
+			durationInMinutes: 0,
+			statusDate: "2024-06-20T11:45:00Z",
+			recipientPhone: "+1234567890",
+			recipientEmail: "tony.reichert@example.com",
+			campaignId: "",
+			createdAt: "2024-06-20T11:45:00Z",
+			updatedAt: "2024-06-20T11:45:00Z",
+			createdBy: "user-456",
+		},
+	];
+
+export const getEmptyClientCommunicationsResponseMock: GetClientCommunicationsResponseDto[] =
+	[];

@@ -1,0 +1,126 @@
+image: imbios/bun-node:24-debian
+
+definitions:
+  steps:
+    - step: &install-deps
+        name: Install Dependencies
+        caches:
+          - node
+        script:
+          - bun install
+          - env | while IFS='=' read -r key value; do printf '%s=%q\n' "$key" "$value"; done > shared.env
+        artifacts:
+          - node_modules/**
+          - shared.env
+
+    - step: &sync-locales
+        name: Sync Locales
+        caches:
+          - node
+        script:
+          - if [ -f shared.env ]; then set -a; . shared.env; set +a; fi
+          - echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> .npmrc 
+          - bun info @beweco/aurora-ui version --json
+          - bun install @beweco/aurora-ui 
+          - bun info @beweco/utils-js version --json
+          - bun install @beweco/utils-js 
+          - bun run sync:locales:up
+
+    - step: &build
+        name: Build
+        image: imbios/bun-node:24-debian
+        caches:
+          - node
+        script:
+          - if [ -f shared.env ]; then set -a; . shared.env; set +a; fi
+          - echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> .npmrc 
+          - bun info @beweco/aurora-ui version --json
+          - bun install @beweco/aurora-ui 
+          - bun info @beweco/utils-js version --json
+          - bun info @beweco/email-template-builder version --json
+          - bun install @beweco/email-template-builder
+          - bun info @beweco/utils-js version --json
+          - bun install @beweco/utils-js 
+          - bun run sync:locales
+          - env | sort
+          - bun run build
+        artifacts:
+          - dist/**
+          - shared.env
+    - step: &deploy_production
+        name: Deploy Production / Cluster GCP
+        image: widerin/openshift-cli
+        script:
+          - if [ -f shared.env ]; then set -a; . shared.env; set +a; fi
+          - cat /etc/os-release
+          - 'echo "Archivos a subir:"'
+          - ls -la dist/
+          - apk add git openssh
+          - oc login $OPENSHIFT_HOST --insecure-skip-tls-verify=true --token="$OPENSHIFT_TOKEN"
+          - oc project beweos-prd
+          - oc start-build beweos-smbs-front-prod --from-dir . --build-arg="NPM_TOKEN=$NPM_TOKEN"
+          - oc start-build beweos-smbs-front-prod --from-dir .
+    - step: &deploy_qa
+        name: Deploy QA / Cluster GCP
+        image: widerin/openshift-cli
+        script:
+          - if [ -f shared.env ]; then set -a; . shared.env; set +a; fi
+          - cat /etc/os-release
+          - 'echo "Archivos a subir:"'
+          - ls -la dist/
+          - apk add git openssh
+          - oc login $OPENSHIFT_HOST --insecure-skip-tls-verify=true --token="$OPENSHIFT_TOKEN"
+          - oc project beweos-qa
+          - oc start-build beweos-smbs-front-qa --from-dir . --build-arg="NPM_TOKEN=$NPM_TOKEN"
+          - oc start-build beweos-smbs-front-qa --from-dir .
+
+    - step: &deploy_desing
+        name: Deploy / Cluster GCP (desing)
+        image: widerin/openshift-cli
+        script:
+          - if [ -f shared.env ]; then set -a; . shared.env; set +a; fi
+          - cat /etc/os-release
+          - 'echo "Archivos a subir:"'
+          - ls -la dist/
+          - apk add git openssh
+          - oc login $OPENSHIFT_HOST --insecure-skip-tls-verify=true -u $OPENSHIFT_USER -p $OPENSHIFT_PASSWORD
+          - oc project beweos-qa
+          - oc start-build beweos-smbs-front-desing --from-dir . --build-arg="NPM_TOKEN=$NPM_TOKEN"
+          - oc start-build beweos-smbs-front-desing --from-dir .
+
+pipelines:
+  branches:
+    qa:
+      - step:
+          <<: *install-deps
+          deployment: qa
+      # - step: *sync-locales
+      - step:
+          <<: *build
+      - step:
+          <<: *deploy_qa
+  custom:
+    deploy_production:
+      - step:
+          <<: *install-deps
+          deployment: main
+      - step: *sync-locales
+      - step: *build
+      - step: *deploy_production
+    deploy_desing:
+      - step:
+          name: Custom Build and Deploy
+          script:
+            - bun info @beweco/aurora-ui version --json
+            - bun install @beweco/aurora-ui 
+            - bun install 
+            - bun info @beweco/utils-js version --json
+            - bun install @beweco/utils-js 
+            - bun info @beweco/email-template-builder version --json
+            - bun install @beweco/email-template-builder
+            - bun run build
+          artifacts:
+            - dist/**
+      - step: *deploy_desing
+
+      

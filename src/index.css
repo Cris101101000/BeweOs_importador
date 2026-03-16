@@ -1,0 +1,168 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Gradient animated background - mirrored from loginos */
+.gradient-background {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	height: 100vh;
+	gap: 1.75rem;
+	
+	/* Gradiente personalizado con colores de HeroUI */
+	background: linear-gradient(
+		to bottom right,
+		hsl(var(--heroui-primary-100)) 0%,
+		hsl(var(--heroui-background)) 50%,
+		hsl(var(--heroui-secondary-100)) 100%
+	);
+	
+	/* Animación del gradiente */
+	background-size: 400% 400%;
+	animation: gradient-animation 10s ease infinite;
+}
+
+/* Gradient static background - no animation (subtle version) */
+.gradient-static {
+	background: 
+		linear-gradient(
+			to bottom right,
+			hsl(var(--heroui-primary-100) / 0.3) 0%,
+			hsl(var(--heroui-background)) 40%,
+			hsl(var(--heroui-background)) 60%,
+			hsl(var(--heroui-secondary-100) / 0.3) 100%
+		),
+		hsl(var(--heroui-background));
+}
+
+/* Gradient animated background - subtle version for app layout */
+.gradient-animated {
+	background: 
+		linear-gradient(
+			to bottom right,
+			hsl(var(--heroui-primary-100) / 0.3) 0%,
+			hsl(var(--heroui-background)) 40%,
+			hsl(var(--heroui-background)) 60%,
+			hsl(var(--heroui-secondary-100) / 0.3) 100%
+		),
+		hsl(var(--heroui-background));
+	background-size: 400% 400%;
+	animation: gradient-animation 15s ease infinite;
+}
+
+@keyframes gradient-animation {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
+@keyframes gradient-shift {
+	0% {
+		background-position: 0% center;
+	}
+	100% {
+		background-position: 200% center;
+	}
+}
+
+@keyframes border-slide-down {
+	0% {
+		background-position: 0% 0%;
+	}
+	100% {
+		background-position: 0% 300%;
+	}
+}
+
+/* Utility class for gradient animated text buttons/links */
+.gradient-animated-text {
+	position: relative;
+	display: inline-block;
+	-webkit-background-clip: text;
+	background-clip: text;
+}
+
+.gradient-animated-text:hover {
+	color: transparent;
+	background-image: linear-gradient(
+		90deg,
+		#2563eb 0%,
+		#9333ea 50%,
+		#2563eb 100%
+	);
+	background-size: 200% 100%;
+	animation: gradient-shift 3s linear infinite;
+}
+
+/* Linda recommendation card styles */
+.linda-recommendation-card {
+	position: relative;
+	border-left: none !important;
+	padding-left: calc(0.75rem + 4px) !important;
+}
+
+.linda-recommendation-card::before {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	width: 4px;
+	background: #3b82f6;
+	border-top-left-radius: 0.5rem;
+	border-bottom-left-radius: 0.5rem;
+	pointer-events: none;
+}
+
+.linda-recommendation-card::after {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	width: 4px;
+	background: linear-gradient(
+		180deg,
+		transparent 0%,
+		transparent 10%,
+		rgba(37, 99, 235, 0.3) 20%,
+		rgba(37, 99, 235, 0.8) 30%,
+		#2563eb 35%,
+		#9333ea 50%,
+		#2563eb 65%,
+		rgba(37, 99, 235, 0.8) 70%,
+		rgba(37, 99, 235, 0.3) 80%,
+		transparent 90%,
+		transparent 100%
+	);
+	background-size: 100% 250%;
+	background-position: 0% 0%;
+	opacity: 0;
+	transition: opacity 0.3s ease;
+	pointer-events: none;
+	border-top-left-radius: 0.5rem;
+	border-bottom-left-radius: 0.5rem;
+}
+
+.linda-recommendation-card:hover::after {
+	opacity: 1;
+	animation: border-slide-down 5s linear infinite;
+}
+
+/* Utility class to hide scrollbar while keeping scroll functionality */
+.scrollbar-hide {
+	-ms-overflow-style: none; /* IE and Edge */
+	scrollbar-width: none; /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+	display: none; /* Chrome, Safari and Opera */
+}

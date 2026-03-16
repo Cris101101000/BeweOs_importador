@@ -1,0 +1,250 @@
+# Cursor Rules for BeweOS Agency Project
+
+## Code Style Guidelines
+
+### TypeScript/JavaScript
+- Use `const` for immutable values
+- Use `let` for mutable values  
+- Prefer arrow functions for simple expressions
+- Use template literals instead of string concatenation
+
+### Naming Conventions
+- **Variables**: camelCase (`userName`, `phoneNumber`)
+- **Functions**: camelCase (`handleSubmit`, `formatDate`)
+- **Components**: PascalCase (`UploadFileComponent`, `BusinessForm`)
+- **Types/Interfaces**: PascalCase (`BusinessInformationForm`, `DomainConfig`)
+- **Enum Types**: PascalCase (`VerificationStatus`, `UserRole`)
+- **Enum Values**: UPPER_CASE (`PENDING`, `VERIFIED`, `FAILED`) - ⚠️ EXCEPTION: This is our project standard
+- **Constants**: UPPER_CASE (`MAX_FILE_SIZE`, `API_ENDPOINTS`)
+- **CSS Classes**: kebab-case (`form-container`, `upload-area`)
+
+### Project-Specific Rules
+
+#### Enum Values Exception
+```typescript
+// ✅ CORRECT - Use UPPER_CASE for enum values (project standard)
+export enum VerificationStatus {
+    PENDING = 'pending',
+    VERIFIED = 'verified', 
+    FAILED = 'failed'
+}
+
+// ❌ INCORRECT - Don't use PascalCase for enum values  
+export enum VerificationStatus {
+    Pending = 'pending',
+    Verified = 'verified',
+    Failed = 'failed'
+}
+```
+
+#### Translation Keys
+- Use snake_case for translation keys: `upload_text`, `upload_errors_max_files`
+- Group related translations with prefixes: `upload_*`, `business_*`
+
+#### Component Props
+- Use camelCase for props
+- Prefix boolean props with `is`, `has`, `can`, `should`
+- Use descriptive names: `onFileUpload` instead of `onUpload`
+
+### React Guidelines
+- Use functional components with hooks
+- Prefer `useCallback` for event handlers
+- Use `useMemo` for expensive calculations
+- Don't use array index as React key (use unique IDs)
+
+### File Organization
+- Group related files in feature folders
+- Use index files for clean imports
+- Separate UI components from business logic
+- Keep hooks in dedicated `hooks/` folders
+
+## Development Workflow
+
+### Documentation Policy - CRITICAL RULE
+
+**⚠️ MANDATORY**: DO NOT generate README files or documentation automatically when iterating on features.
+
+#### ❌ NEVER Do This:
+- Generate README.md files after implementing a feature
+- Create documentation files (*.md) without explicit request
+- Auto-generate API documentation during feature development
+- Create CHANGELOG entries automatically
+- Generate component documentation markdown files
+
+#### ✅ ONLY Generate Documentation When:
+- The user **explicitly requests** it with commands like:
+  - "create a README for this feature"
+  - "document this component"
+  - "generate API documentation"
+  - "add documentation for..."
+- There is a specific task to create documentation
+- The user asks for help understanding existing code (explain, don't create files)
+
+#### Rationale:
+- Documentation should be intentional and maintained separately
+- Auto-generated docs often become outdated quickly
+- Focus development time on code, not automatic documentation
+- Documentation is a deliberate task, not a side effect of coding
+
+## Biome Lint Exceptions
+
+When Biome reports these as errors, they are acceptable in this project:
+1. Enum values in UPPER_CASE (our project standard)
+2. Object properties that are configuration constants in UPPER_CASE
+3. API endpoint constants in UPPER_CASE
+
+## Common Patterns
+
+### Upload Component Usage
+```typescript
+<UploadFileComponent
+    acceptedFiles="image/*"
+    maxFiles={1}
+    onUpload={handleFileUpload}
+    translations={{
+        uploadText: "Sube tu imagen",
+        subText: "PNG, JPG hasta 5MB"
+    }}
+/>
+```
+
+### Translation Hook Usage  
+```typescript
+const { t } = useTranslate();
+const label = t("upload_text", "Default text");
+```
+
+### Form Validation
+- Use proper TypeScript types for form data
+- Validate on submit and show user-friendly errors
+- Use controlled components for form inputs
+
+## Notifications and Feedback
+
+### Toast Notifications - MANDATORY RULE
+
+**⚠️ CRITICAL**: ALWAYS use the toast notification system from `@beweco/aurora-ui` with the helper functions from `@shared/utils/toast-config.utils.ts`. NEVER use any other toast library or custom implementation.
+
+#### ✅ CORRECT - Using helper functions (RECOMMENDED)
+```typescript
+import { useAuraToast } from "@beweco/aurora-ui";
+import { useTranslate } from "@tolgee/react";
+import { 
+  configureSuccessToast, 
+  configureErrorToastWithTranslation 
+} from "@shared/utils/toast-config.utils";
+import { EnumErrorType } from "@shared/domain/enums/enum-error-type.enum";
+
+const MyComponent = () => {
+  const { showToast } = useAuraToast();
+  const { t } = useTranslate();
+
+  const handleAction = async () => {
+    try {
+      // ... acción ...
+      
+      // Toast de éxito (con fondo verde)
+      showToast(
+        configureSuccessToast(
+          t("success_title"),
+          t("success_message") // descripción opcional
+        )
+      );
+    } catch (error) {
+      // Toast de error (con fondo rojo)
+      showToast(
+        configureErrorToastWithTranslation(
+          EnumErrorType.Critical,
+          t,
+          "error_title_key",
+          "error_description_key"
+        )
+      );
+    }
+  };
+};
+```
+
+#### ✅ CORRECT - Direct API (ONLY if helper functions don't fit)
+```typescript
+import { useAuraToast } from "@beweco/aurora-ui";
+import { useTranslate } from "@tolgee/react";
+
+const MyComponent = () => {
+  const { showToast } = useAuraToast();
+  const { t } = useTranslate();
+
+  const handleAction = () => {
+    // API correcta: color, title, description
+    showToast({
+      color: "success", // ⚠️ NO "type"
+      title: t("success_title"),
+      description: t("success_message"), // ⚠️ NO "message"
+    });
+  };
+};
+```
+
+#### ❌ INCORRECT - Wrong API
+```typescript
+// ❌ NO usar "type" y "message" (API incorrecta)
+showToast({
+  type: "success",        // ❌ Debe ser "color"
+  title: t("title"),
+  message: t("message"),  // ❌ Debe ser "description"
+});
+
+// ❌ NO usar react-toastify
+import { toast } from "react-toastify";
+toast.success("Success!");
+
+// ❌ NO usar react-hot-toast
+import toast from "react-hot-toast";
+toast.success("Success!");
+
+// ❌ NO usar alert del navegador
+alert("Success!");
+
+// ❌ NO crear toasts custom
+const CustomToast = () => { ... };
+```
+
+#### Supported Toast Colors
+- `success` - Para operaciones exitosas (fondo verde con check ✓)
+- `danger` - Para errores críticos (fondo rojo)
+- `warning` - Para advertencias (fondo amarillo/naranja)
+- `info` - Para información general (fondo azul)
+
+#### Helper Functions
+1. **configureSuccessToast(title, description?)**
+   - Para operaciones exitosas
+   - Retorna: `{ color: "success", title, description }`
+
+2. **configureErrorToastWithTranslation(errorType, t, titleKey?, descriptionKey?)**
+   - Para errores con tipado
+   - Automáticamente selecciona el color según el tipo de error
+   - ErrorTypes: `Critical`, `Validation`, `Network`, `Warning`, `Permission`, `Timeout`, `BusinessRule`, `Unexpected`
+
+#### Best Practices
+- **ALWAYS** use `configureSuccessToast()` for success messages
+- **ALWAYS** use `configureErrorToastWithTranslation()` for errors
+- Use translated messages with `useTranslate()`
+- Provide both `title` and `description` for clarity
+- Keep messages concise and actionable
+- For errors, include helpful information about what went wrong
+
+#### API Summary
+```typescript
+// ✅ Correct API
+showToast({
+  color: "success" | "danger" | "warning" | "info",
+  title: string,
+  description?: string
+});
+
+// ❌ Wrong API (don't use)
+showToast({
+  type: "...",      // ❌ Wrong
+  message: "...",   // ❌ Wrong
+});
+```

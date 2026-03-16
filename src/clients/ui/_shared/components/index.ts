@@ -1,0 +1,11 @@
+export { ResponsiveButton } from "@shared/ui/components/responsive-button";
+export { ClientsEmptyState } from "./empty-state/clients-empty-state.component";
+export { ClientsFilteredEmptyState } from "./empty-state/clients-filtered-empty-state.component";
+export { ClientsFilterDrawer } from "./clients-filter-drawer/clients-filter-drawer.component";
+// export { ConfirmDeleteModal } from "./confirm-delete-modal/confirm-delete-modal.component";
+export { QuickContactModal } from "./quick-contact-modal/quick-contact-modal.component";
+export { TagChip } from "./tag-chip";
+export type { TagChipProps } from "./tag-chip";
+export { TagsList } from "./tags-list";
+export type { TagsListProps, TagItem } from "./tags-list";
+export { FiltersContainer } from "./filters-container";
