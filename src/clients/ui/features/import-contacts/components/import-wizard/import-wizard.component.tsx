@@ -1,4 +1,3 @@
-import { Wizard } from "@/shared/ui/components/wizard/Wizard";
 import {
 	Button,
 	Modal,
@@ -6,8 +5,9 @@ import {
 	ModalContent,
 	ModalFooter,
 	ModalHeader,
+	Wizard,
+	type WizardStep,
 } from "@beweco/aurora-ui";
-import type { WizardStep } from "@beweco/aurora-ui";
 import {
 	EnumImportStep,
 	EnumProcessStatus,

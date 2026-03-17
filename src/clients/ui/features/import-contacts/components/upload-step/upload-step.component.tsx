@@ -1,4 +1,4 @@
-import { UploadFileComponent } from "@/shared/ui/components/UploadFile/UploadFile";
+import { UploadFileComponent } from "@shared/ui/components/UploadFile/UploadFile";
 import { Button, Textarea, useAuraToast } from "@beweco/aurora-ui";
 import { ValidateImportFileUseCase } from "@clients/application/validate-import-file.usecase";
 import {
