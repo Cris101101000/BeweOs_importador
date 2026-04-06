@@ -67,12 +67,13 @@ export type {
 } from "./SocialMediaCarousel";
 export { ContentPreviewModal } from "./content-preview-modal";
 export type { ContentPreviewModalProps } from "./content-preview-modal";
-export {
-	EmailTemplateBuilder,
-	type EmailTemplateBuilderProps,
-	type CustomVariable,
-	type TEditorConfiguration,
-} from "./EmailTemplateBuilder";
+// TODO: Habilitar cuando se instale @beweco/email-template-builder
+// export {
+// 	EmailTemplateBuilder,
+// 	type EmailTemplateBuilderProps,
+// 	type CustomVariable,
+// 	type TEditorConfiguration,
+// } from "./EmailTemplateBuilder";
 export {
 	CollapsibleConfigSection,
 	type CollapsibleConfigSectionProps,

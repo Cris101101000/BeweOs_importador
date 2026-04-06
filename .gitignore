@@ -16,4 +16,4 @@ package-lock.json
 # IDE
 !.vscode/extensions.json
 .idea
-# .npmrc
+.npmrc

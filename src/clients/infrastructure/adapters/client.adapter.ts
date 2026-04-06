@@ -25,6 +25,9 @@ import {
 } from "../mappers/export-clients.mapper";
 import { toClientFromResponse } from "../mappers/get-client-response.mapper";
 import { toUpdateClientRequestDto } from "../mappers/update-client-request.mapper";
+import { LocalContactsStorageService } from "../services/local-contacts-storage.service";
+
+const isMockMode = process.env.REACT_APP_USE_MOCK_DATA === "true";
 
 /** Same query string building for GET /clients and GET /clients/export-csv */
 function buildClientsQueryString(
@@ -49,6 +52,13 @@ export class ClientAdapter implements IClientPort {
 	private readonly httpClient: IHttpClient = httpService;
 
 	async createClient(clientData: IClient): Promise<IClient> {
+		if (isMockMode) {
+			const storage = LocalContactsStorageService.getInstance();
+			const dto = toCreateClientRequestDto(clientData) as GetClientResponseDto;
+			const saved = storage.save(dto);
+			return toClientFromResponse(saved);
+		}
+
 		const requestDto = toCreateClientRequestDto(clientData);
 
 		const response = await this.httpClient.post<CreateClientResponseDto>(
@@ -68,7 +78,12 @@ export class ClientAdapter implements IClientPort {
 	}
 
 	async getClientById(clientId: string): Promise<IClient> {
-		console.log(`Getting client with ID: ${clientId}`);
+		if (isMockMode) {
+			const storage = LocalContactsStorageService.getInstance();
+			const contact = storage.getById(clientId);
+			if (contact) return toClientFromResponse(contact);
+			throw new Error("client_not_found");
+		}
 
 		const response = await this.httpClient.get<GetClientResponseDto>(
 			`/clients/${clientId}`
@@ -82,6 +97,10 @@ export class ClientAdapter implements IClientPort {
 	}
 
 	async getClientsByFilters(filters?: IClientFilter): Promise<IClientResponse> {
+		if (isMockMode) {
+			return this.getClientsFromLocalStorage(filters);
+		}
+
 		const requestDto = filters ? toGetClientsByFilterRequestDto(filters) : {};
 		const queryString = buildClientsQueryString(requestDto);
 		const url = queryString ? `/clients?${queryString}` : "/clients";
@@ -118,10 +137,43 @@ export class ClientAdapter implements IClientPort {
 		throw new Error(response.error?.code || "API call failed");
 	}
 
+	private getClientsFromLocalStorage(filters?: IClientFilter): IClientResponse {
+		const storage = LocalContactsStorageService.getInstance();
+		const requestLimit = filters?.limit || 20;
+		const requestOffset = filters?.offset || 0;
+
+		const { items, total } = storage.getByFilters({
+			limit: requestLimit,
+			offset: requestOffset,
+			search: filters?.search,
+			status: filters?.status,
+		});
+
+		const clients = items.map((item) => toClientFromResponse(item));
+		const currentPage = Math.floor(requestOffset / requestLimit) + 1;
+		const totalPages = Math.ceil(total / requestLimit);
+
+		return {
+			clients,
+			total,
+			page: currentPage,
+			limit: requestLimit,
+			totalPages,
+		};
+	}
+
 	async updateClient(
 		clientId: string,
 		updates: Partial<IClient>
 	): Promise<IClient> {
+		if (isMockMode) {
+			const storage = LocalContactsStorageService.getInstance();
+			const updateDto = toUpdateClientRequestDto(updates);
+			const updated = storage.update(clientId, updateDto);
+			if (updated) return toClientFromResponse(updated);
+			throw new Error("client_not_found");
+		}
+
 		// Map updates using dedicated mapper
 		const updateDto: Partial<GetClientResponseDto> =
 			toUpdateClientRequestDto(updates);
@@ -143,6 +195,12 @@ export class ClientAdapter implements IClientPort {
 	}
 
 	async deleteClient(clientId: string): Promise<void> {
+		if (isMockMode) {
+			const storage = LocalContactsStorageService.getInstance();
+			storage.delete(clientId);
+			return;
+		}
+
 		const response = await this.httpClient.delete(`/clients/${clientId}`);
 
 		if (response.success) {
@@ -153,6 +211,12 @@ export class ClientAdapter implements IClientPort {
 	}
 
 	async deleteClients(clientIds: string[]): Promise<void> {
+		if (isMockMode) {
+			const storage = LocalContactsStorageService.getInstance();
+			storage.deleteMany(clientIds);
+			return;
+		}
+
 		// Build query string with repeated 'ids' params: ?ids=uuid1&ids=uuid2
 		const queryParams = new URLSearchParams();
 		for (const id of clientIds) {

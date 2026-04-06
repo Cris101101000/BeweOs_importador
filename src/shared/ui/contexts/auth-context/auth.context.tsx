@@ -26,6 +26,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
 	useEffect(() => {
 		const checkAuth = async () => {
+			// En modo mock, skip validación de sesión contra backend
+			if (process.env.REACT_APP_USE_MOCK_DATA === "true") {
+				setIsCheckingAuth(false);
+				setIsAuthenticated(true);
+				return;
+			}
+
 			try {
 				const useCase = new RefreshSessionUseCase(new AuthAdapter());
 				const result = await useCase.execute();

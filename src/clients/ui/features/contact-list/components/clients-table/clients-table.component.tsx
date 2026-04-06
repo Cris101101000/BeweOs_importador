@@ -13,8 +13,13 @@ import {
 import { DEFAULT_EXPORT_COLUMNS } from "@clients/domain/constants/export-columns.constants";
 import type { IClient } from "@clients/domain/interfaces/client.interface";
 import type { IField } from "@clients/domain/interfaces/field.interface";
-import { useExportClientsData } from "../../hooks/use-export-clients-data.hook";
+import { ClientsEmptyState } from "@clients/ui/_shared/components/empty-state/clients-empty-state.component";
+import { ClientsFilteredEmptyState } from "@clients/ui/_shared/components/empty-state/clients-filtered-empty-state.component";
+import { useFilters } from "@clients/ui/_shared/contexts/filters.context";
+import { useNavigateToClientDetail } from "@clients/ui/_shared/hooks/use-navigate-to-client-detail.hook";
+import { mapSortDescriptorToOrder } from "@clients/ui/_shared/mappers/sort-descriptor-to-order.mapper";
 import { tableFiltersToClientFilter } from "@clients/ui/_shared/mappers/table-filters-to-client-filter.mapper";
+import { ImportWizard } from "@clients/ui/features/import-contacts";
 import type { ClientsOutletContext } from "@clients/ui/pages/clients-page/clients-page.context";
 import { EnumErrorType } from "@shared/domain/enums/enum-error-type.enum";
 import {
@@ -25,13 +30,13 @@ import { useTranslate } from "@tolgee/react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { FC, Key } from "react";
 import { useOutletContext } from "react-router-dom";
-import { ClientsEmptyState } from "@clients/ui/_shared/components/empty-state/clients-empty-state.component";
-import { ClientsFilteredEmptyState } from "@clients/ui/_shared/components/empty-state/clients-filtered-empty-state.component";
+import { useExportClientsData } from "../../hooks/use-export-clients-data.hook";
 import { SaveViewModal } from "../save-view-modal/save-view-modal.component";
-import { useFilters } from "@clients/ui/_shared/contexts/filters.context";
-import { useNavigateToClientDetail } from "@clients/ui/_shared/hooks/use-navigate-to-client-detail.hook";
-import { mapSortDescriptorToOrder } from "@clients/ui/_shared/mappers/sort-descriptor-to-order.mapper";
-import { ClientTableRow, ClientsTableSkeleton, ClientsTableTopContent } from "./_internal";
+import {
+	ClientTableRow,
+	ClientsTableSkeleton,
+	ClientsTableTopContent,
+} from "./_internal";
 import type { ClientsTableProps } from "./interfaces";
 
 /**
@@ -87,6 +92,8 @@ export const ClientsTable: FC<ClientsTableProps> = ({
 	});
 	/* this is the state for the save view modal */
 	const [isSaveViewOpen, setIsSaveViewOpen] = useState(false);
+	/* this is the state for the import modal */
+	const [isImportModalOpen, setIsImportModalOpen] = useState(false);
 	/* this is the state for the selected keys */
 	const [selectedKeys, setSelectedKeys] = useState<Selection>(
 		new Set<string | number>()
@@ -322,6 +329,7 @@ export const ClientsTable: FC<ClientsTableProps> = ({
 				setFieldVisibility={setFieldVisibility}
 				handleSaveView={handleSaveView}
 				handleOpenFilterModal={handleOpenFilterModal}
+				handleOpenImportModal={() => setIsImportModalOpen(true)}
 				onClientsDeleted={handleClientsDeleted}
 				handleExport={handleExport}
 				isExporting={isExporting}
@@ -456,6 +464,12 @@ export const ClientsTable: FC<ClientsTableProps> = ({
 				isOpen={isSaveViewOpen}
 				onClose={() => setIsSaveViewOpen(false)}
 				appliedFilters={appliedFilters}
+			/>
+
+			{/* Import contacts wizard */}
+			<ImportWizard
+				isOpen={isImportModalOpen}
+				onClose={() => setIsImportModalOpen(false)}
 			/>
 		</div>
 	);

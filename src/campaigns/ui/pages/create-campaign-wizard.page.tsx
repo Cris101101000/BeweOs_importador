@@ -13,7 +13,10 @@ import {
   IconComponent,
 } from "@beweco/aurora-ui";
 import { Wizard, type WizardStep, type WizardStepValidation } from "@shared/ui/components/wizard";
-import { EmailTemplateBuilder, type CustomVariable } from '@shared/ui/components';
+// TODO: Habilitar cuando se instale @beweco/email-template-builder
+// import { EmailTemplateBuilder, type CustomVariable } from '@shared/ui/components';
+type CustomVariable = { name: string; value: string };
+const EmailTemplateBuilder = (_props: Record<string, unknown>) => null;
 import { useCampaignAudience } from '../features/audience/hooks/useCampaignAudience';
 import { useCampaignTemplates } from '../features/templates/hooks/useCampaignTemplates';
 import { useCampaignWizard } from '../features/campaign-management/hooks/useCampaignWizard.hook';

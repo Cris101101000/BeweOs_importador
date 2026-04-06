@@ -14,9 +14,15 @@ import { getUserId } from "@beweco/utils-js";
 import { DeleteViewUseCase } from "@clients/application/delete-view.usecase";
 import type { IField } from "@clients/domain/interfaces/field.interface";
 import { ViewAdapter } from "@clients/infrastructure/adapters/view.adapter";
+import type { ClientsTableFilters } from "@clients/ui/_shared/components/clients-filter-drawer/clients-filter-drawer.types";
+import { useFilters } from "@clients/ui/_shared/contexts/filters.context";
+import { useViewsContext } from "@clients/ui/_shared/contexts/views.context";
+import { clientFilterToTableFilters } from "@clients/ui/_shared/mappers/client-filter-to-table-filters.mapper";
+import { countActiveClientsFilters } from "@clients/ui/_shared/mappers/drawer-filters-to-clients-filter.mapper";
 import { useDeleteClientsModal } from "@clients/ui/features/contact-list/hooks/use-delete-clients-modal.hook";
 import { EnumErrorType } from "@shared/domain/enums/enum-error-type.enum";
 import { ConfirmDeleteModal } from "@shared/ui/components/confirm-delete-modal/confirm-delete-modal";
+import { ResponsiveButton } from "@shared/ui/components/responsive-button";
 import { useConfirmDeleteModal } from "@shared/ui/store/useConfirmDeleteModal";
 import {
 	configureErrorToastWithTranslation,
@@ -31,12 +37,6 @@ import {
 	useRef,
 	useState,
 } from "react";
-import { useFilters } from "@clients/ui/_shared/contexts/filters.context";
-import { useViewsContext } from "@clients/ui/_shared/contexts/views.context";
-import type { ClientsTableFilters } from "@clients/ui/_shared/components/clients-filter-drawer/clients-filter-drawer.types";
-import { ResponsiveButton } from "@shared/ui/components/responsive-button";
-import { clientFilterToTableFilters } from "@clients/ui/_shared/mappers/client-filter-to-table-filters.mapper";
-import { countActiveClientsFilters } from "@clients/ui/_shared/mappers/drawer-filters-to-clients-filter.mapper";
 import { ColumnManager } from "../../column-manager/column-manager.component";
 import { SavedViewsDropdown } from "../../saved-views-dropdown/saved-views-dropdown.component";
 
@@ -47,6 +47,7 @@ interface ClientsTableTopContentProps {
 	handleSaveView: () => void;
 	handleOpenFilterModal: () => void;
 	handleExport: () => void;
+	handleOpenImportModal?: () => void;
 	onClientsDeleted?: () => void;
 	isExporting?: boolean;
 }
@@ -65,6 +66,7 @@ export const ClientsTableTopContent: FC<ClientsTableTopContentProps> = ({
 	handleSaveView,
 	handleOpenFilterModal,
 	handleExport,
+	handleOpenImportModal,
 	onClientsDeleted,
 	isExporting = false,
 }) => {
@@ -432,6 +434,23 @@ export const ClientsTableTopContent: FC<ClientsTableTopContentProps> = ({
 					onFieldVisibilityChange={setFieldVisibility}
 					className="bg-default-100 text-default-800"
 				/>
+				{handleOpenImportModal && (
+					<Button
+						variant="solid"
+						color="primary"
+						size="sm"
+						onPress={handleOpenImportModal}
+						aria-label={t("import_contacts_title", "Importar contactos")}
+						startContent={
+							<IconComponent
+								icon="solar:upload-minimalistic-outline"
+								size="sm"
+							/>
+						}
+					>
+						{t("import_contacts_title", "Importar")}
+					</Button>
+				)}
 				<Button
 					variant="solid"
 					color="primary"

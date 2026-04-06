@@ -60,7 +60,7 @@ export default defineConfig({
         },
       },
     },
-		port: 3000,
+		port: 3001,
   },
 	resolve: {
 		alias: {

@@ -7,7 +7,7 @@ export const mockGetClientsByFilterResponse: IResponse<GetClientsResponseDto> =
 		message: "Clients retrieved successfully",
 		timestamp: new Date().toISOString(),
 		data: {
-			clients: [
+			items: [
 				{
 					id: "client-001",
 					companyId: "3d64aa99-b9f5-49a4-a2a3-1e83bcc08949",
