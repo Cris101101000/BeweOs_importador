@@ -4,14 +4,15 @@
 
 ### NPM Configuration
 
-Para instalar Aurora UI y utils necesitas esta clave de npm en tu `.npmrc`:
+Para instalar Aurora UI y utils necesitas configurar tu `.npmrc` con un token de npm válido.
 
-sudo nano ~/.npmrc
-copiar y pegar el siguiente codigo
+Copia el archivo de ejemplo y reemplaza el token:
 ```bash
-@beweco:registry=https://registry.npmjs.org/
-//registry.npmjs.org/:_authToken=TU_TOKEN_NPM_AQUI
+cp .npmrc.example .npmrc
+# Edita .npmrc y reemplaza TU_TOKEN_NPM_AQUI con el token real
 ```
+
+Consulta `CONFIGURACION.md` para obtener los tokens necesarios.
 
 ### Install Dependencies
 
