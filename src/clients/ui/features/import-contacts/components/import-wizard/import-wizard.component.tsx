@@ -138,14 +138,19 @@ export const ImportWizard: FC<ImportWizardProps> = ({ isOpen, onClose }) => {
 				onClose={handleClose}
 				size="5xl"
 				scrollBehavior="inside"
-				isDismissable={processStatus !== EnumProcessStatus.PROCESSING}
+				isDismissable={false}
 				hideCloseButton={processStatus === EnumProcessStatus.PROCESSING}
 			>
 				<ModalContent>
-					<ModalHeader className="flex items-center gap-3">
+					<ModalHeader className="flex flex-col items-start gap-1">
 						<h2 className="text-xl font-semibold">
 							{t("import_contacts_title")}
 						</h2>
+						{currentStep === EnumImportStep.UPLOAD && (
+							<p className="text-xs text-default-400 font-normal">
+								{t("import_upload_formats_hint")}
+							</p>
+						)}
 					</ModalHeader>
 					<ModalBody className="p-0">
 						<Wizard
@@ -157,7 +162,7 @@ export const ImportWizard: FC<ImportWizardProps> = ({ isOpen, onClose }) => {
 							navigationConfig={{
 								showNavigationButtons: false,
 							}}
-							minHeight="500px"
+							minHeight="auto"
 						/>
 					</ModalBody>
 					{processStatus === EnumProcessStatus.DONE && result && (

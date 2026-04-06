@@ -46,6 +46,12 @@ export class InitialDataAdapter
 			return this.cachedData;
 		}
 
+		// En modo mock, usar datos locales sin llamar al backend
+		if (process.env.REACT_APP_USE_MOCK_DATA === "true") {
+			this.cachedData = mockInitialDataResponse?.data as DtoGetUserData;
+			return this.cachedData;
+		}
+
 		// Si ya hay una petición en curso, reutilizar la misma promesa
 		if (this.fetchPromise) {
 			return this.fetchPromise;

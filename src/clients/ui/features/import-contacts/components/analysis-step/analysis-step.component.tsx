@@ -2,6 +2,7 @@ import {
 	Button,
 	Checkbox,
 	Chip,
+	IconComponent,
 	Table,
 	TableBody,
 	TableCell,
@@ -9,12 +10,81 @@ import {
 	TableHeader,
 	TableRow,
 } from "@beweco/aurora-ui";
-import { PREVIEW_ROWS } from "@clients/domain/constants/import-fields.constants";
+import {
+	PREVIEW_ROWS,
+	REQUIRED_IMPORT_FIELDS,
+} from "@clients/domain/constants/import-fields.constants";
 import { EnumImportStep } from "@clients/domain/enums/import-status.enum";
 import { useTranslate } from "@tolgee/react";
 import { type FC, useMemo } from "react";
 import { useFieldMapping } from "../../hooks/use-field-mapping.hook";
 import { useImportStore } from "../../store/useImportStore";
+
+/**
+ * Máximo de columnas a mostrar en el preview para evitar overflow horizontal.
+ * Priorizamos las que matchean con campos obligatorios.
+ */
+const MAX_PREVIEW_COLUMNS = 5;
+
+/**
+ * Retorna el icono según la extensión del archivo
+ */
+const getFileIcon = (filename: string): string => {
+	const ext = filename.split(".").pop()?.toLowerCase();
+	switch (ext) {
+		case "csv":
+			return "solar:document-text-outline";
+		case "xlsx":
+		case "xls":
+			return "solar:file-text-outline";
+		case "pdf":
+			return "solar:file-text-outline";
+		default:
+			return "solar:document-outline";
+	}
+};
+
+/**
+ * Formatea bytes a una cadena legible (KB, MB)
+ */
+const formatFileSize = (bytes: number): string => {
+	if (bytes < 1024 * 1024) {
+		return `${(bytes / 1024).toFixed(1)} KB`;
+	}
+	return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+};
+
+/**
+ * Detecta los índices de las columnas que matchean con campos obligatorios.
+ */
+const getRelevantColumnIndices = (headers: string[]): number[] => {
+	const requiredSynonyms = REQUIRED_IMPORT_FIELDS.flatMap((f) => [
+		f.key.toLowerCase(),
+		f.label.toLowerCase(),
+		...f.synonyms.map((s) => s.toLowerCase()),
+	]);
+
+	const matchedIndices: number[] = [];
+	const unmatchedIndices: number[] = [];
+
+	for (let i = 0; i < headers.length; i++) {
+		const normalized = headers[i].toLowerCase().trim();
+		if (requiredSynonyms.includes(normalized)) {
+			matchedIndices.push(i);
+		} else {
+			unmatchedIndices.push(i);
+		}
+	}
+
+	// Primero las obligatorias, luego las opcionales hasta completar el máximo
+	const result = [...matchedIndices];
+	for (const idx of unmatchedIndices) {
+		if (result.length >= MAX_PREVIEW_COLUMNS) break;
+		result.push(idx);
+	}
+
+	return result.sort((a, b) => a - b);
+};
 
 export const AnalysisStep: FC = () => {
 	const { t } = useTranslate();
@@ -28,20 +98,21 @@ export const AnalysisStep: FC = () => {
 		totalRecords,
 		file,
 		setHasHeaders,
-		setRawData,
 		setFieldMappings,
 		goToStep,
 	} = useImportStore();
 
 	const previewData = useMemo(() => rawData.slice(0, PREVIEW_ROWS), [rawData]);
 
+	const visibleIndices = useMemo(
+		() => getRelevantColumnIndices(detectedHeaders),
+		[detectedHeaders],
+	);
+
+	const hiddenColumns = detectedHeaders.length - visibleIndices.length;
+
 	const handleToggleHeaders = (checked: boolean) => {
-		if (checked) {
-			setHasHeaders(true);
-		} else {
-			// La primera fila pasa a ser datos, no encabezados
-			setHasHeaders(false);
-		}
+		setHasHeaders(!checked);
 	};
 
 	const handleProceedToMapping = () => {
@@ -57,30 +128,63 @@ export const AnalysisStep: FC = () => {
 	const isSingleColumn = detectedHeaders.length === 1;
 
 	return (
-		<div className="flex flex-col gap-6 p-4">
-			{/* Resumen */}
-			<div className="flex flex-wrap items-center gap-4">
-				<p className="text-sm text-default-700">
-					{t("import_analysis_records_detected", {
-						count: totalRecords,
-						columns: detectedHeaders.length,
-					})}
-				</p>
-
+		<div className="flex flex-col gap-4 p-4">
+			{/* Tarjeta del archivo cargado + métricas */}
+			<div className="flex flex-wrap items-start gap-3">
+				{/* Tarjeta archivo */}
 				{file && (
-					<p className="text-sm text-default-500">
-						{t("import_analysis_source_file", {
-							filename: file.name,
-							size: `${(file.size / 1024).toFixed(1)} KB`,
-						})}
-					</p>
+					<div className="flex items-center gap-3 rounded-xl border border-default-200 dark:border-default-100 bg-default-50 dark:bg-default-100/30 px-4 py-3 min-w-0">
+						<div className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary/10 shrink-0">
+							<IconComponent
+								icon={getFileIcon(file.name)}
+								size="sm"
+								className="text-primary"
+							/>
+						</div>
+						<div className="min-w-0">
+							<p className="text-sm font-medium text-default-700 dark:text-default-500 truncate">
+								{file.name}
+							</p>
+							<div className="flex items-center gap-2">
+								<span className="text-xs text-default-400">
+									{formatFileSize(file.size)}
+								</span>
+								<button
+									type="button"
+									onClick={handleGoBack}
+									className="text-xs text-primary hover:underline"
+								>
+									{t("import_analysis_change_file")}
+								</button>
+							</div>
+						</div>
+						{extractionSource === "ai" && (
+							<Chip color="warning" size="sm" variant="flat" className="shrink-0">
+								{t("import_analysis_extracted_by_ai")}
+							</Chip>
+						)}
+					</div>
 				)}
 
-				{extractionSource === "ai" && (
-					<Chip color="warning" size="sm" variant="flat">
-						{t("import_analysis_extracted_by_ai")}
-					</Chip>
-				)}
+				{/* Metric cards */}
+				<div className="flex items-center gap-3">
+					<div className="flex flex-col items-center rounded-xl border border-default-200 dark:border-default-100 bg-default-50 dark:bg-default-100/30 px-5 py-3 min-w-[100px]">
+						<span className="text-xl font-bold text-default-800 dark:text-default-500">
+							{totalRecords.toLocaleString()}
+						</span>
+						<span className="text-xs text-default-400">
+							{t("import_analysis_label_records")}
+						</span>
+					</div>
+					<div className="flex flex-col items-center rounded-xl border border-default-200 dark:border-default-100 bg-default-50 dark:bg-default-100/30 px-5 py-3 min-w-[100px]">
+						<span className="text-xl font-bold text-default-800 dark:text-default-500">
+							{detectedHeaders.length}
+						</span>
+						<span className="text-xs text-default-400">
+							{t("import_analysis_label_columns")}
+						</span>
+					</div>
+				</div>
 			</div>
 
 			{/* Warning una sola columna */}
@@ -90,22 +194,61 @@ export const AnalysisStep: FC = () => {
 				</div>
 			)}
 
-			{/* Tabla preview */}
-			<div className="overflow-auto">
-				<Table aria-label="Preview de datos importados" isStriped>
+			{/* Info filas + checkbox encabezados en la misma línea */}
+			<div className="flex flex-wrap items-center justify-between gap-2">
+				<p className="text-xs text-default-400">
+					{t("import_analysis_preview_showing", {
+						shown: Math.min(PREVIEW_ROWS, totalRecords),
+						total: totalRecords,
+					})}
+					{hiddenColumns > 0 &&
+						` · +${hiddenColumns} ${hiddenColumns === 1 ? "columna" : "columnas"} más`}
+				</p>
+
+				<Checkbox
+					isSelected={!hasHeaders}
+					onValueChange={(checked) => handleToggleHeaders(checked)}
+					size="sm"
+				>
+					<span className="text-xs">{t("import_analysis_no_headers")}</span>
+				</Checkbox>
+			</div>
+
+			{/* Tabla preview con scroll horizontal */}
+			<div className="overflow-x-auto rounded-lg border border-default-200 dark:border-default-100">
+				<Table
+					aria-label="Preview de datos importados"
+					isCompact
+					removeWrapper
+					classNames={{
+						table: "min-w-full",
+						th: "bg-default-100 dark:bg-default-50/50 text-xs text-default-500 dark:text-default-400 font-medium",
+						td: "text-xs",
+					}}
+				>
 					<TableHeader>
-						{detectedHeaders.map((header, idx) => (
-							<TableColumn key={`col-${idx}`}>
-								{header || `Col ${idx + 1}`}
+						{visibleIndices.map((colIdx) => (
+							<TableColumn key={`col-${colIdx}`}>
+								<span className="truncate block max-w-[180px]">
+									{detectedHeaders[colIdx] || `Col ${colIdx + 1}`}
+								</span>
 							</TableColumn>
 						))}
 					</TableHeader>
 					<TableBody>
 						{previewData.map((row, rowIdx) => (
 							<TableRow key={`row-${rowIdx}`}>
-								{detectedHeaders.map((_header, colIdx) => (
+								{visibleIndices.map((colIdx) => (
 									<TableCell key={`cell-${rowIdx}-${colIdx}`}>
-										{row[colIdx] || ""}
+										{row[colIdx] ? (
+											<span className="truncate block max-w-[180px] text-default-700 dark:text-default-500">
+												{row[colIdx]}
+											</span>
+										) : (
+											<span className="text-default-300 dark:text-default-200">
+												—
+											</span>
+										)}
 									</TableCell>
 								))}
 							</TableRow>
@@ -114,29 +257,11 @@ export const AnalysisStep: FC = () => {
 				</Table>
 			</div>
 
-			{/* Info filas */}
-			<p className="text-xs text-default-400">
-				{t("import_analysis_preview_showing", {
-					shown: Math.min(PREVIEW_ROWS, totalRecords),
-					total: totalRecords,
-				})}
-			</p>
-
-			{/* Checkbox de encabezados */}
-			<Checkbox
-				isSelected={!hasHeaders}
-				onValueChange={(checked) => handleToggleHeaders(!checked)}
-				size="sm"
-			>
-				{t("import_analysis_no_headers")}
-			</Checkbox>
-
-			{/* Acciones */}
-			<div className="flex items-center justify-between">
-				<Button variant="light" size="sm" onPress={handleGoBack}>
-					{t("import_analysis_reload")}
-				</Button>
-
+			{/* Footer: nota de campos + botón mapear */}
+			<div className="flex items-center justify-between gap-4 pt-2">
+				<p className="text-xs text-default-400">
+					{t("import_analysis_fields_note")}
+				</p>
 				<Button
 					color="primary"
 					onPress={handleProceedToMapping}

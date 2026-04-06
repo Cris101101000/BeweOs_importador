@@ -14,6 +14,12 @@ import esOnboarding from "./src/locales/es/onboarding.json";
 import esPricing from "./src/locales/es/pricing.json";
 import esSettings from "./src/locales/es/settings.json";
 import esSmartTags from "./src/locales/es/smart-tags.json";
+import esImportContacts from "./src/locales/es/import-contacts.json";
+import esCampaigns from "./src/locales/es/campaigns.json";
+import esContenidosAi from "./src/locales/es/contenidos-ai.json";
+import esSmartComms from "./src/locales/es/smart-comms.json";
+import esSocialNetworks from "./src/locales/es/social-networks.json";
+import esWidgets from "./src/locales/es/widgets.json";
 
 import enCatalog from "./src/locales/en/catalog.json";
 import enClients from "./src/locales/en/clients.json";
@@ -27,6 +33,12 @@ import enOnboarding from "./src/locales/en/onboarding.json";
 import enPricing from "./src/locales/en/pricing.json";
 import enSettings from "./src/locales/en/settings.json";
 import enSmartTags from "./src/locales/en/smart-tags.json";
+import enImportContacts from "./src/locales/en/import-contacts.json";
+import enCampaigns from "./src/locales/en/campaigns.json";
+import enContenidosAi from "./src/locales/en/contenidos-ai.json";
+import enSmartComms from "./src/locales/en/smart-comms.json";
+import enSocialNetworks from "./src/locales/en/social-networks.json";
+import enWidgets from "./src/locales/en/widgets.json";
 
 // Combinar traducciones
 const esTranslations = {
@@ -42,6 +54,12 @@ const esTranslations = {
 	...esLindaConfiguration,
 	...esNotifications,
 	...esOnboarding,
+	...esImportContacts,
+	...esCampaigns,
+	...esContenidosAi,
+	...esSmartComms,
+	...esSocialNetworks,
+	...esWidgets,
 };
 const enTranslations = {
 	...enCommon,
@@ -56,6 +74,12 @@ const enTranslations = {
 	...enLindaConfiguration,
 	...enNotifications,
 	...enOnboarding,
+	...enImportContacts,
+	...enCampaigns,
+	...enContenidosAi,
+	...enSmartComms,
+	...enSocialNetworks,
+	...enWidgets,
 };
 
 // Función para detectar idioma del navegador

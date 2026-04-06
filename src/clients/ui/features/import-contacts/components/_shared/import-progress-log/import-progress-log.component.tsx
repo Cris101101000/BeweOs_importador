@@ -7,41 +7,13 @@ interface ImportProgressLogProps {
 	entries: ILogEntry[];
 }
 
-const LOG_ICON_MAP: Record<string, { icon: string; color: string }> = {
-	[EnumLogEntryType.SUCCESS]: {
-		icon: "solar:check-circle-outline",
-		color: "text-success",
-	},
-	[EnumLogEntryType.ERROR]: {
-		icon: "solar:close-circle-outline",
-		color: "text-danger",
-	},
-	[EnumLogEntryType.LOADING]: {
-		icon: "solar:refresh-circle-outline",
-		color: "text-primary",
-	},
-	[EnumLogEntryType.INFO]: {
-		icon: "solar:info-circle-outline",
-		color: "text-default-400",
-	},
-};
-
-/**
- * Formatea timestamp a HH:mm:ss
- */
-const formatTimestamp = (date: Date): string => {
-	return date.toLocaleTimeString("es", {
-		hour: "2-digit",
-		minute: "2-digit",
-		second: "2-digit",
-	});
-};
-
 /**
  * ImportProgressLog
  *
- * Lista scrollable de entradas de log con auto-scroll al último elemento.
- * Cada entrada muestra timestamp, icono según tipo y mensaje.
+ * Stepper vertical con 3 estados:
+ * - Completado: check verde
+ * - En progreso: punto azul pulsante
+ * - Pendiente: círculo vacío gris (entradas futuras no se muestran aquí, se definen fuera)
  */
 export const ImportProgressLog = ({ entries }: ImportProgressLogProps) => {
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -51,47 +23,87 @@ export const ImportProgressLog = ({ entries }: ImportProgressLogProps) => {
 		bottomRef.current?.scrollIntoView({ behavior: "smooth" });
 	}, [entries.length]);
 
+	if (entries.length === 0) return null;
+
 	return (
 		<div
 			ref={containerRef}
-			className="max-h-64 overflow-y-auto rounded-lg border border-default-200 bg-default-50 p-3 dark:border-default-100 dark:bg-default-50/5"
+			className="max-h-72 overflow-y-auto"
 		>
-			{entries.length === 0 ? (
-				<p className="text-center text-sm text-default-400">
-					Sin entradas de log
-				</p>
-			) : (
-				<div className="flex flex-col gap-1">
-					{entries.map((entry, index) => {
-						const config = LOG_ICON_MAP[entry.type] || LOG_ICON_MAP[EnumLogEntryType.INFO];
-						return (
-							<div
-								key={`${entry.type}-${index}`}
-								className="flex items-start gap-2 py-1"
-							>
-								<span className="shrink-0 font-mono text-xs text-default-400">
-									{formatTimestamp(entry.timestamp)}
-								</span>
-								<IconComponent
-									icon={config.icon}
-									className={`shrink-0 ${config.color}`}
-									size="sm"
-								/>
-								<span
-									className={`text-sm ${
-										entry.type === EnumLogEntryType.ERROR
-											? "text-danger"
-											: "text-default-700 dark:text-default-300"
-									}`}
-								>
-									{entry.message}
-								</span>
+			<div className="flex flex-col">
+				{entries.map((entry, index) => {
+					const isLast = index === entries.length - 1;
+					const isCompleted = entry.type === EnumLogEntryType.SUCCESS;
+					const isError = entry.type === EnumLogEntryType.ERROR;
+					const isActive = isLast && entry.type === EnumLogEntryType.LOADING;
+
+					return (
+						<div
+							key={`step-${index}`}
+							className="flex items-start gap-3"
+						>
+							{/* Línea + indicador */}
+							<div className="flex flex-col items-center">
+								{/* Indicador de estado */}
+								{isCompleted ? (
+									<div className="flex items-center justify-center w-6 h-6 rounded-full bg-success-100 dark:bg-success-900/30">
+										<IconComponent
+											icon="solar:check-circle-bold"
+											size="sm"
+											className="text-success"
+										/>
+									</div>
+								) : isError ? (
+									<div className="flex items-center justify-center w-6 h-6 rounded-full bg-danger-100 dark:bg-danger-900/30">
+										<IconComponent
+											icon="solar:close-circle-bold"
+											size="sm"
+											className="text-danger"
+										/>
+									</div>
+								) : isActive ? (
+									<div className="flex items-center justify-center w-6 h-6">
+										<div className="w-3 h-3 rounded-full bg-primary animate-pulse" />
+									</div>
+								) : (
+									<div className="flex items-center justify-center w-6 h-6">
+										<IconComponent
+											icon="solar:check-circle-outline"
+											size="sm"
+											className="text-success-400"
+										/>
+									</div>
+								)}
+
+								{/* Línea conectora */}
+								{!isLast && (
+									<div className={`w-px h-6 ${
+										isCompleted || (!isActive && !isError)
+											? "bg-success-200 dark:bg-success-800/30"
+											: isError
+												? "bg-danger-200 dark:bg-danger-800/30"
+												: "bg-default-200 dark:bg-default-100"
+									}`} />
+								)}
 							</div>
-						);
-					})}
-					<div ref={bottomRef} />
-				</div>
-			)}
+
+							{/* Contenido */}
+							<div className={`pb-4 ${isLast ? "pb-0" : ""}`}>
+								<p className={`text-sm ${
+									isError
+										? "text-danger"
+										: isActive
+											? "text-default-700 dark:text-default-400 font-medium"
+											: "text-default-500 dark:text-default-400"
+								}`}>
+									{entry.message}
+								</p>
+							</div>
+						</div>
+					);
+				})}
+				<div ref={bottomRef} />
+			</div>
 		</div>
 	);
 };

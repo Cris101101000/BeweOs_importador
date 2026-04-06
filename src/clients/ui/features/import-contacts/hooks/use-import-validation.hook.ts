@@ -76,8 +76,8 @@ const validateRecord = (record: Partial<IImportContact>): string[] => {
 		reasons.push("Teléfono vacío");
 	}
 
-	if (!record.country || !isValidCountry(record.country)) {
-		reasons.push("País no reconocido o vacío");
+	if (record.country && !isValidCountry(record.country)) {
+		reasons.push("País no reconocido");
 	}
 
 	return reasons;

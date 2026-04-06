@@ -438,18 +438,18 @@ export const ClientsTableTopContent: FC<ClientsTableTopContentProps> = ({
 					<Button
 						variant="solid"
 						color="primary"
-						className="bg-default-100 text-default-800"
 						size="sm"
 						onPress={handleOpenImportModal}
 						aria-label={t("import_contacts_title", "Importar contactos")}
-						isIconOnly
 						startContent={
 							<IconComponent
 								icon="solar:upload-minimalistic-outline"
 								size="sm"
 							/>
 						}
-					/>
+					>
+						{t("import_contacts_title", "Importar")}
+					</Button>
 				)}
 				<Button
 					variant="solid"

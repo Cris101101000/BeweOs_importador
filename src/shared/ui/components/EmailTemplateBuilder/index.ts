@@ -1,18 +1,12 @@
 /**
  * EmailTemplateBuilder Component - Barrel Export
- * 
- * Exporta el componente EmailTemplateBuilder y todos sus tipos.
- * Este archivo facilita las importaciones limpias desde otros módulos.
- * 
- * @example
- * ```tsx
- * import { EmailTemplateBuilder, type CustomVariable } from "@shared/ui/components";
- * ```
+ *
+ * TODO: Habilitar cuando se instale @beweco/email-template-builder en package.json
  */
 
-export { EmailTemplateBuilder } from "./EmailTemplateBuilder";
-export type {
-  EmailTemplateBuilderProps,
-  CustomVariable,
-  TEditorConfiguration,
-} from "./EmailTemplateBuilder.types";
+// export { EmailTemplateBuilder } from "./EmailTemplateBuilder";
+// export type {
+//   EmailTemplateBuilderProps,
+//   CustomVariable,
+//   TEditorConfiguration,
+// } from "./EmailTemplateBuilder.types";

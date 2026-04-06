@@ -23,10 +23,13 @@ const REPORT_HEADERS = [
 ];
 
 /**
- * Genera y descarga un archivo CSV
+ * Genera y descarga un archivo CSV con BOM UTF-8 y punto y coma como separador.
  */
 const generateCSVDownload = (content: string, filename: string) => {
-	const blob = new Blob([`\uFEFF${content}`], {
+	const encoder = new TextEncoder();
+	const bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
+	const encoded = encoder.encode(content);
+	const blob = new Blob([bom, encoded], {
 		type: "text/csv;charset=utf-8;",
 	});
 	const url = URL.createObjectURL(blob);
@@ -58,7 +61,7 @@ export const useImportDownloads = () => {
 			record.reasons.join("; "),
 		]);
 
-		const csv = Papa.unparse({ fields: INVALID_HEADERS, data: rows });
+		const csv = Papa.unparse({ fields: INVALID_HEADERS, data: rows }, { delimiter: ";" });
 		generateCSVDownload(csv, "registros-invalidos.csv");
 	}, []);
 
@@ -104,7 +107,7 @@ export const useImportDownloads = () => {
 			]);
 		}
 
-		const csv = Papa.unparse({ fields: REPORT_HEADERS, data: rows });
+		const csv = Papa.unparse({ fields: REPORT_HEADERS, data: rows }, { delimiter: ";" });
 		generateCSVDownload(csv, "reporte-importacion.csv");
 	}, []);
 

@@ -1,5 +1,5 @@
 import { UploadFileComponent } from "@shared/ui/components/UploadFile/UploadFile";
-import { Button, Textarea, useAuraToast } from "@beweco/aurora-ui";
+import { Button, IconComponent, Textarea, useAuraToast } from "@beweco/aurora-ui";
 import { ValidateImportFileUseCase } from "@clients/application/validate-import-file.usecase";
 import {
 	ACCEPTED_FILE_TYPES,
@@ -15,6 +15,34 @@ import { type FC, useCallback, useState } from "react";
 import { useImportStore } from "../../store/useImportStore";
 import { DownloadTemplate } from "../_shared/download-template/download-template.component";
 
+/**
+ * Formatea bytes a una cadena legible (KB, MB)
+ */
+const formatFileSize = (bytes: number): string => {
+	if (bytes < 1024 * 1024) {
+		return `${(bytes / 1024).toFixed(1)} KB`;
+	}
+	return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+};
+
+/**
+ * Retorna el icono según la extensión del archivo
+ */
+const getFileIcon = (filename: string): string => {
+	const ext = filename.split(".").pop()?.toLowerCase();
+	switch (ext) {
+		case "csv":
+			return "solar:document-text-outline";
+		case "xlsx":
+		case "xls":
+			return "solar:file-text-outline";
+		case "pdf":
+			return "solar:file-text-outline";
+		default:
+			return "solar:document-outline";
+	}
+};
+
 export const UploadStep: FC = () => {
 	const { t } = useTranslate();
 	const { showToast } = useAuraToast();
@@ -24,6 +52,7 @@ export const UploadStep: FC = () => {
 		file,
 		pastedText,
 		setFile,
+		clearFile,
 		setPastedText,
 		setRawData,
 		setExtractionSource,
@@ -65,6 +94,10 @@ export const UploadStep: FC = () => {
 		},
 		[showToast, t]
 	);
+
+	const handleRemoveFile = useCallback(() => {
+		clearFile();
+	}, [clearFile]);
 
 	const handleAnalyze = useCallback(async () => {
 		if (!file && !pastedText.trim()) return;
@@ -119,31 +152,57 @@ export const UploadStep: FC = () => {
 	const hasInput = !!file || pastedText.trim().length > 0;
 
 	return (
-		<div className="flex flex-col gap-6 p-4">
-			{/* Dropzone */}
-			<UploadFileComponent
-				size="large"
-				accept={ACCEPTED_FILE_TYPES}
-				maxSize={MAX_FILE_SIZE_BYTES}
-				onUpload={handleFileUpload}
-				onError={handleFileError}
-				translations={{
-					dropzoneText: t("import_upload_dropzone_title"),
-					dropzoneSubText: t("import_upload_dropzone_subtitle"),
-				}}
-			/>
-
-			{/* Mostrar nombre del archivo seleccionado */}
-			{file && (
-				<div className="text-sm text-default-500 text-center">
-					{file.name} ({(file.size / 1024).toFixed(1)} KB)
+		<div className="flex flex-col gap-4 p-4">
+			{/* Dropzone o archivo cargado */}
+			{file ? (
+				<div className="flex items-center gap-3 rounded-lg border border-default-200 bg-default-50 dark:bg-default-100/50 p-4">
+					<div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10">
+						<IconComponent
+							icon={getFileIcon(file.name)}
+							size="md"
+							className="text-primary"
+						/>
+					</div>
+					<div className="flex-1 min-w-0">
+						<p className="text-sm font-medium text-default-700 dark:text-default-600 truncate">
+							{file.name}
+						</p>
+						<p className="text-xs text-default-400">
+							{formatFileSize(file.size)}
+						</p>
+					</div>
+					<button
+						type="button"
+						onClick={handleRemoveFile}
+						className="flex items-center justify-center w-8 h-8 rounded-full hover:bg-default-200 dark:hover:bg-default-200/50 transition-colors"
+						aria-label={t("common_remove")}
+					>
+						<IconComponent
+							icon="solar:close-circle-outline"
+							size="sm"
+							className="text-default-400"
+						/>
+					</button>
 				</div>
+			) : (
+				<UploadFileComponent
+					size="large"
+					acceptedFiles={ACCEPTED_FILE_TYPES}
+					maxFileSize={MAX_FILE_SIZE_BYTES}
+					onUpload={handleFileUpload}
+					onError={handleFileError}
+					className="hover:border-primary/50 hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors"
+					translations={{
+						uploadText: t("import_upload_dropzone_title"),
+						subText: t("import_upload_dropzone_subtitle"),
+					}}
+				/>
 			)}
 
-			{/* Separador */}
-			<div className="flex items-center gap-4">
+			{/* Separador "o pega texto" */}
+			<div className="flex items-center gap-3">
 				<div className="flex-1 h-px bg-default-200" />
-				<span className="text-sm text-default-400">
+				<span className="text-xs text-default-400 whitespace-nowrap">
 					{t("import_upload_or_separator")}
 				</span>
 				<div className="flex-1 h-px bg-default-200" />
@@ -158,15 +217,14 @@ export const UploadStep: FC = () => {
 						setPastedText(val);
 					}
 				}}
-				minRows={4}
-				maxRows={8}
+				minRows={3}
+				maxRows={6}
 				className="w-full"
+				classNames={{
+					inputWrapper: "border-default-200 focus-within:border-primary dark:border-default-100",
+				}}
+				isDisabled={!!file}
 			/>
-
-			{/* Formatos aceptados */}
-			<p className="text-xs text-default-400 text-center">
-				{t("import_upload_formats_hint")}
-			</p>
 
 			{/* Descargar plantillas */}
 			<div className="flex justify-center">
@@ -174,7 +232,7 @@ export const UploadStep: FC = () => {
 			</div>
 
 			{/* Botón Analizar */}
-			<div className="flex justify-end">
+			<div className="flex justify-end pt-2">
 				<Button
 					color="primary"
 					onPress={handleAnalyze}

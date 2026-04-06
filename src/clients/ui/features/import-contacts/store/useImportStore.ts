@@ -8,6 +8,7 @@ import type {
   IImportResult,
   EnumDuplicateAction,
   EnumLogEntryType,
+  ICustomProperty,
 } from "@clients/domain/interfaces/import-contact.interface";
 import type {
   EnumImportStep,
@@ -36,6 +37,7 @@ interface ImportState {
   progress: number;
   logEntries: ILogEntry[];
   result: IImportResult | null;
+  customProperties: ICustomProperty[];
 }
 
 interface ImportActions {
@@ -54,6 +56,8 @@ interface ImportActions {
   setProgress: (progress: number) => void;
   addLogEntry: (message: string, type: EnumLogEntryType) => void;
   setResult: (result: IImportResult) => void;
+  addCustomProperty: (property: ICustomProperty) => void;
+  removeCustomProperty: (key: string) => void;
   goToStep: (step: EnumImportStep) => void;
   reset: () => void;
 }
@@ -76,6 +80,7 @@ const initialState: ImportState = {
   progress: 0,
   logEntries: [],
   result: null,
+  customProperties: [],
 };
 
 export const useImportStore = create<ImportState & ImportActions>((set) => ({
@@ -112,6 +117,20 @@ export const useImportStore = create<ImportState & ImportActions>((set) => ({
     })),
 
   setResult: (result) => set({ result }),
+
+  addCustomProperty: (property) =>
+    set((state) => ({
+      customProperties: [...state.customProperties, property],
+    })),
+
+  removeCustomProperty: (key) =>
+    set((state) => ({
+      customProperties: state.customProperties.filter((p) => p.key !== key),
+      fieldMappings: state.fieldMappings.map((m) =>
+        m.beweField === key ? { ...m, beweField: null, isCustomProperty: false, customPropertyType: undefined } : m,
+      ),
+    })),
+
   goToStep: (step) => set({ currentStep: step }),
   reset: () => set(initialState),
 }));

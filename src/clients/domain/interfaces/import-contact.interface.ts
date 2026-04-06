@@ -20,6 +20,24 @@ export interface IFieldMapping {
 	sourceIndex: number;
 	beweField: string | null;
 	autoMatched: boolean;
+	isCustomProperty?: boolean;
+	customPropertyType?: EnumCustomPropertyType;
+}
+
+export const EnumCustomPropertyType = {
+	TEXT: "text",
+	NUMBER: "number",
+	DATE: "date",
+	BOOLEAN: "boolean",
+} as const;
+
+export type EnumCustomPropertyType = (typeof EnumCustomPropertyType)[keyof typeof EnumCustomPropertyType];
+
+export interface ICustomProperty {
+	key: string;
+	label: string;
+	type: EnumCustomPropertyType;
+	sourceColumn: string;
 }
 
 export interface IImportContact {
@@ -33,6 +51,7 @@ export interface IImportContact {
 	category?: string;
 	potential?: string;
 	gender?: string;
+	notes?: string;
 	[key: string]: unknown;
 }
 

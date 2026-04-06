@@ -64,14 +64,18 @@ const baseURL = isLocalhost
 	? "/api"
 	: process.env.REACT_APP_BASE_URL_BACKEND || "/api";
 
+const isMockMode = process.env.REACT_APP_USE_MOCK_DATA === "true";
+
 const config: IHttpServiceConfig = {
 	baseURL,
 	refreshPath: "/auth/refresh-token",
-	onAuthError: (error) => {
-		console.log("onAuthError >>", error);
-		clearAuthCookies();
-		goToLogin(TGoToLogin.Expired);
-	},
+	onAuthError: isMockMode
+		? undefined
+		: (error) => {
+				console.log("onAuthError >>", error);
+				clearAuthCookies();
+				goToLogin(TGoToLogin.Expired);
+			},
 };
 
 // Create the HTTP client using @beweco/utils-js
