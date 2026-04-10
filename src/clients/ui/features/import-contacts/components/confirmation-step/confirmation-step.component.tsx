@@ -128,6 +128,7 @@ export const ConfirmationStep: FC = () => {
 								base: "border-success-200 dark:border-success-800/30",
 							}}
 						>
+							<div className="overflow-x-auto">
 							<Table
 								aria-label="Vista previa de registros válidos"
 								isCompact
@@ -167,9 +168,10 @@ export const ConfirmationStep: FC = () => {
 									))}
 								</TableBody>
 							</Table>
+							</div>
 
 							{/* Paginación válidos */}
-							<div className="flex items-center justify-between mt-3">
+							<div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mt-3">
 								<p className="text-xs text-default-400">
 									Mostrando {Math.min(validVisible, validRecords.length)} de {validRecords.length}
 								</p>
@@ -221,6 +223,7 @@ export const ConfirmationStep: FC = () => {
 								base: "border-danger-200 dark:border-danger-800/30",
 							}}
 						>
+							<div className="overflow-x-auto">
 							<Table
 								aria-label="Registros inválidos"
 								isCompact
@@ -275,9 +278,10 @@ export const ConfirmationStep: FC = () => {
 									))}
 								</TableBody>
 							</Table>
+							</div>
 
 							{/* Paginación inválidos */}
-							<div className="flex items-center justify-between mt-3">
+							<div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mt-3">
 								<p className="text-xs text-default-400">
 									{t("import_confirm_invalid_showing_partial", {
 										shown: Math.min(invalidVisible, invalidRecords.length),
@@ -317,7 +321,7 @@ export const ConfirmationStep: FC = () => {
 							}
 						>
 							{/* Acciones rápidas */}
-							<div className="flex gap-2 mb-4">
+							<div className="flex flex-wrap gap-2 mb-4">
 								<Button
 									size="sm"
 									variant="flat"
@@ -341,6 +345,7 @@ export const ConfirmationStep: FC = () => {
 							</div>
 
 							{/* Tabla de duplicados — paginada */}
+							<div className="overflow-x-auto">
 							<Table
 								aria-label="Duplicados"
 								isCompact
@@ -400,9 +405,10 @@ export const ConfirmationStep: FC = () => {
 									))}
 								</TableBody>
 							</Table>
+							</div>
 
 							{/* Paginación duplicados */}
-							<div className="flex items-center justify-between mt-3">
+							<div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mt-3">
 								<p className="text-xs text-default-400">
 									{t("import_confirm_showing_count", {
 										shown: Math.min(duplicateVisible, duplicateRecords.length),
@@ -453,7 +459,7 @@ export const ConfirmationStep: FC = () => {
 				</div>
 
 				{/* Botón importar */}
-				<div className="flex items-center justify-between">
+				<div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3">
 					<Button
 						variant="light"
 						size="sm"
@@ -488,7 +494,17 @@ export const ConfirmationStep: FC = () => {
 			<div className="flex flex-col items-center gap-6 p-4">
 				{/* Indicador circular */}
 				<div className="relative flex items-center justify-center">
-					<svg width="140" height="140" viewBox="0 0 120 120" className="-rotate-90">
+					<svg
+					width="140"
+					height="140"
+					viewBox="0 0 120 120"
+					className="-rotate-90"
+					role="progressbar"
+					aria-valuenow={Math.round(progress)}
+					aria-valuemin={0}
+					aria-valuemax={100}
+					aria-label={t("import_processing_title")}
+				>
 						{/* Fondo del anillo */}
 						<circle
 							cx="60"
@@ -571,7 +587,7 @@ export const ConfirmationStep: FC = () => {
 				</div>
 
 				{/* Métricas neutras */}
-				<div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+				<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
 					<div className="flex items-center gap-3 rounded-xl border border-default-200 dark:border-default-100 bg-default-50 dark:bg-default-100/30 px-4 py-3">
 						<IconComponent icon="solar:check-circle-outline" size="md" className="text-success" />
 						<div className="flex flex-col">
@@ -686,7 +702,7 @@ export const ConfirmationStep: FC = () => {
 							{ImportLogService.getInstance().getAll().slice(0, 10).map((log) => (
 								<div
 									key={log.id}
-									className="flex items-center justify-between p-2 rounded-lg bg-default-50 dark:bg-default-100/30 text-xs"
+									className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 p-2 rounded-lg bg-default-50 dark:bg-default-100/30 text-xs"
 								>
 									<div className="flex flex-col gap-0.5">
 										<span className="font-medium text-default-700 dark:text-default-500">
@@ -696,7 +712,7 @@ export const ConfirmationStep: FC = () => {
 											{new Date(log.date).toLocaleString()}
 										</span>
 									</div>
-									<div className="flex items-center gap-3">
+									<div className="flex flex-wrap items-center gap-2 sm:gap-3">
 										<span className="text-success">{log.created} creados</span>
 										<span className="text-warning">{log.updated} actualizados</span>
 										{log.failed > 0 && (
@@ -714,7 +730,7 @@ export const ConfirmationStep: FC = () => {
 					</AccordionItem>
 				</Accordion>
 				{/* Doble acción en footer */}
-				<div className="flex items-center justify-end gap-3 pt-2">
+				<div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3 pt-2">
 					<Button
 						variant="light"
 						onPress={reset}

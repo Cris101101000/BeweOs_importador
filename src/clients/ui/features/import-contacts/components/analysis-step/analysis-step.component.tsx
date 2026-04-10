@@ -130,7 +130,7 @@ export const AnalysisStep: FC = () => {
 	return (
 		<div className="flex flex-col gap-4 p-4">
 			{/* Tarjeta del archivo cargado + métricas */}
-			<div className="flex flex-wrap items-start gap-3">
+			<div className="flex flex-col sm:flex-row flex-wrap items-start gap-3">
 				{/* Tarjeta archivo */}
 				{file && (
 					<div className="flex items-center gap-3 rounded-xl border border-default-200 dark:border-default-100 bg-default-50 dark:bg-default-100/30 px-4 py-3 min-w-0">
@@ -167,8 +167,8 @@ export const AnalysisStep: FC = () => {
 				)}
 
 				{/* Metric cards */}
-				<div className="flex items-center gap-3">
-					<div className="flex flex-col items-center rounded-xl border border-default-200 dark:border-default-100 bg-default-50 dark:bg-default-100/30 px-5 py-3 min-w-[100px]">
+				<div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
+					<div className="flex flex-col items-center rounded-xl border border-default-200 dark:border-default-100 bg-default-50 dark:bg-default-100/30 px-5 py-3 min-w-0 sm:min-w-[100px] flex-1 sm:flex-initial">
 						<span className="text-xl font-bold text-default-800 dark:text-default-500">
 							{totalRecords.toLocaleString()}
 						</span>
@@ -176,7 +176,7 @@ export const AnalysisStep: FC = () => {
 							{t("import_analysis_label_records")}
 						</span>
 					</div>
-					<div className="flex flex-col items-center rounded-xl border border-default-200 dark:border-default-100 bg-default-50 dark:bg-default-100/30 px-5 py-3 min-w-[100px]">
+					<div className="flex flex-col items-center rounded-xl border border-default-200 dark:border-default-100 bg-default-50 dark:bg-default-100/30 px-5 py-3 min-w-0 sm:min-w-[100px] flex-1 sm:flex-initial">
 						<span className="text-xl font-bold text-default-800 dark:text-default-500">
 							{detectedHeaders.length}
 						</span>
@@ -258,7 +258,7 @@ export const AnalysisStep: FC = () => {
 			</div>
 
 			{/* Footer: nota de campos + botón mapear */}
-			<div className="flex items-center justify-between gap-4 pt-2">
+			<div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-2">
 				<p className="text-xs text-default-400">
 					{t("import_analysis_fields_note")}
 				</p>

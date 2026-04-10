@@ -140,10 +140,15 @@ export const ImportWizard: FC<ImportWizardProps> = ({ isOpen, onClose }) => {
 				scrollBehavior="inside"
 				isDismissable={false}
 				hideCloseButton={processStatus === EnumProcessStatus.PROCESSING}
+				classNames={{
+					base: "max-sm:m-0 max-sm:rounded-none max-sm:h-full max-sm:max-h-full",
+					body: "max-sm:px-2",
+				}}
+				aria-labelledby="import-wizard-title"
 			>
 				<ModalContent>
 					<ModalHeader className="flex flex-col items-start gap-1">
-						<h2 className="text-xl font-semibold">
+						<h2 id="import-wizard-title" className="text-xl font-semibold">
 							{t("import_contacts_title")}
 						</h2>
 						{currentStep === EnumImportStep.UPLOAD && (

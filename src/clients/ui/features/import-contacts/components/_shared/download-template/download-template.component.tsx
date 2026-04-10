@@ -52,7 +52,7 @@ export const DownloadTemplate = () => {
 			<p className="text-xs text-default-400">
 				{t("import_upload_template_label")}
 			</p>
-			<div className="flex items-center gap-3">
+			<div className="flex flex-col sm:flex-row items-center gap-3">
 				<Button
 					variant="light"
 					size="sm"

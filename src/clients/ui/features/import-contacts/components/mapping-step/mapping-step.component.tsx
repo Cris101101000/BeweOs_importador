@@ -294,9 +294,9 @@ export const MappingStep: FC = () => {
 								placeholder="Ej: Puntos, Categoría..."
 								value={customPropertyName}
 								onValueChange={setCustomPropertyName}
-								className="max-w-64"
+								className="w-full sm:max-w-64"
 							/>
-							<div className="flex items-center gap-2">
+							<div className="flex flex-wrap items-center gap-2">
 								{PROPERTY_TYPE_OPTIONS.map((opt) => (
 									<Button
 										key={opt.key}
@@ -348,7 +348,7 @@ export const MappingStep: FC = () => {
 											placeholder="Agregar opción..."
 											value={newOptionValue}
 											onValueChange={setNewOptionValue}
-											className="max-w-48"
+											className="w-full sm:max-w-48"
 											onKeyDown={(e) => {
 												if (e.key === "Enter" && newOptionValue.trim()) {
 													const val = newOptionValue.trim();
@@ -414,7 +414,7 @@ export const MappingStep: FC = () => {
 								}}
 								selectionMode="single"
 								size="sm"
-								className="min-w-40"
+								className="min-w-32 sm:min-w-40"
 								placeholder={t("import_mapping_do_not_import")}
 								color={
 									isDuplicate
@@ -480,7 +480,7 @@ export const MappingStep: FC = () => {
 								]}
 							</Select>
 							{isDuplicate && (
-								<p className="text-xs text-danger mt-1">
+								<p className="text-xs text-danger mt-1" role="alert">
 									{t("import_mapping_duplicate_field_warning", {
 										field:
 											ALL_IMPORT_FIELDS.find(
@@ -497,7 +497,7 @@ export const MappingStep: FC = () => {
 						{preview.map((val, idx) => (
 							<span
 								key={`prev-${idx}`}
-								className="text-xs text-default-400 truncate max-w-48"
+								className="text-xs text-default-400 truncate max-w-32 sm:max-w-48"
 							>
 								{val}
 							</span>
@@ -584,6 +584,7 @@ export const MappingStep: FC = () => {
 			)}
 
 			{/* Tabla de mapeo — filas mapeadas */}
+			<div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
 			<Table
 				aria-label="Mapeo de campos"
 				classNames={{
@@ -599,6 +600,7 @@ export const MappingStep: FC = () => {
 					{mappedRows.map(renderMappingRow)}
 				</TableBody>
 			</Table>
+			</div>
 
 			{/* Sección colapsable de columnas sin vincular */}
 			{unmappedRows.length > 0 && (
@@ -619,6 +621,7 @@ export const MappingStep: FC = () => {
 					</button>
 
 					{showUnmapped && (
+						<div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
 						<Table
 							aria-label="Columnas sin vincular"
 							classNames={{
@@ -634,6 +637,7 @@ export const MappingStep: FC = () => {
 								{unmappedRows.map(renderMappingRow)}
 							</TableBody>
 						</Table>
+						</div>
 					)}
 				</div>
 			)}
@@ -668,7 +672,7 @@ export const MappingStep: FC = () => {
 			)}
 
 			{/* Acciones */}
-			<div className="flex items-center justify-between pt-2">
+			<div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-2 pt-2">
 				<Button variant="light" size="sm" onPress={handleGoBack}>
 					{t("import_analysis_reload")}
 				</Button>
