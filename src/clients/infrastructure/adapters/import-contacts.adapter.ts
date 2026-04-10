@@ -4,12 +4,37 @@ import type {
   IImportResult,
   IDuplicateContact,
 } from "@clients/domain/interfaces/import-contact.interface";
+import { EnumClientStatus } from "@clients/domain/enums/client-status.enum";
 import type { GetClientResponseDto } from "../dtos/get-client.dto";
 import { ImportFileParserAdapter } from "./import-file-parser.adapter";
 import { ImportContactsMock } from "../mocks/import-contacts.mock";
 import { LocalContactsStorageService } from "../services/local-contacts-storage.service";
 
 const isMockMode = process.env.REACT_APP_USE_MOCK_DATA === "true";
+
+/**
+ * Mapea texto libre de estado al valor del enum.
+ * Soporta español, inglés y portugués.
+ */
+const STATUS_TEXT_MAP: Record<string, string> = {
+  lead: EnumClientStatus.LEAD,
+  prospecto: EnumClientStatus.PROSPECT,
+  prospect: EnumClientStatus.PROSPECT,
+  cliente: EnumClientStatus.CLIENT,
+  client: EnumClientStatus.CLIENT,
+  "ex-cliente": EnumClientStatus.EX_CLIENT,
+  "ex cliente": EnumClientStatus.EX_CLIENT,
+  ex_client: EnumClientStatus.EX_CLIENT,
+  "ex client": EnumClientStatus.EX_CLIENT,
+  importado: EnumClientStatus.IMPORTED,
+  imported: EnumClientStatus.IMPORTED,
+};
+
+function normalizeStatus(rawStatus: string | undefined): string {
+  if (!rawStatus) return EnumClientStatus.IMPORTED;
+  const normalized = rawStatus.trim().toLowerCase();
+  return STATUS_TEXT_MAP[normalized] || EnumClientStatus.IMPORTED;
+}
 
 export class ImportContactsAdapter implements IImportContactsPort {
   private readonly fileParser = new ImportFileParserAdapter();
@@ -132,12 +157,12 @@ export class ImportContactsAdapter implements IImportContactsPort {
    * Convierte un IImportContact a GetClientResponseDto para almacenar
    */
   private toClientDto(contact: IImportContact): GetClientResponseDto {
-    return {
+    const dto: GetClientResponseDto = {
       firstname: contact.firstName,
       lastname: contact.lastName,
       email: contact.email,
-      formattedName: `${contact.firstName} ${contact.lastName}`.trim(),
-      status: contact.status || "prospect",
+      formattedName: `${contact.firstName} ${contact.lastName || ""}`.trim(),
+      status: normalizeStatus(contact.status),
       gender: contact.gender,
       phones: contact.phone
         ? [
@@ -149,7 +174,30 @@ export class ImportContactsAdapter implements IImportContactsPort {
           ]
         : [],
       isActive: true,
+      birthdate: contact.birthdate || undefined,
     };
+
+    // Solo agregar etiquetas si vienen con datos
+    if (contact.tags && contact.tags.length > 0) {
+      dto.tags = contact.tags.map((tag) => ({
+        title: tag.trim(),
+        createdAt: new Date().toISOString(),
+        createdBy: "import",
+      }));
+    }
+
+    // Solo agregar notas si hay contenido real
+    if (contact.notes && contact.notes.trim().length > 0) {
+      dto.notes = [
+        {
+          content: contact.notes,
+          createdAt: new Date().toISOString(),
+          createdBy: "import",
+        },
+      ];
+    }
+
+    return dto;
   }
 
   private delay(ms: number): Promise<void> {

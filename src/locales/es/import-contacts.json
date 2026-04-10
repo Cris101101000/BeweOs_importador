@@ -68,6 +68,7 @@
   "import_confirm_show_more": "Mostrar más",
   "import_confirm_showing_count": "Mostrando {shown} de {total}",
   "import_confirm_button_import": "Importar {count} contactos",
+  "import_confirm_back_to_mapping": "Volver al mapeo",
   "import_confirm_no_changes": "Sin cambios nuevos",
   "import_confirm_invalid_reason": "Razón del error",
   "import_confirm_invalid_showing_partial": "Mostrando {shown} de {total} registros inválidos. Descarga el CSV para ver todos.",

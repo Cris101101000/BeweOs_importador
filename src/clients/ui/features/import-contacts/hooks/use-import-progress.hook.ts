@@ -2,6 +2,7 @@ import { ImportContactsUseCase } from "@clients/application/import-contacts.usec
 import { EnumProcessStatus } from "@clients/domain/enums/import-status.enum";
 import { EnumLogEntryType } from "@clients/domain/interfaces/import-contact.interface";
 import { ImportContactsAdapter } from "@clients/infrastructure/adapters/import-contacts.adapter";
+import { ImportLogService } from "@clients/infrastructure/services/local-contacts-storage.service";
 import { useCallback } from "react";
 import { useImportStore } from "../store/useImportStore";
 
@@ -51,6 +52,16 @@ export const useImportProgress = () => {
 				EnumLogEntryType.SUCCESS
 			);
 			finalState.setProcessStatus(EnumProcessStatus.DONE);
+
+			// Registrar en historial de importaciones
+			ImportLogService.getInstance().add({
+				fileName: finalState.file?.name || "Texto pegado",
+				totalProcessed: result.created + result.updated,
+				created: result.created,
+				updated: result.updated,
+				failed: result.failed,
+				invalidCount: finalState.invalidRecords.length,
+			});
 		} catch (error) {
 			const errorState = useImportStore.getState();
 			errorState.addLogEntry(

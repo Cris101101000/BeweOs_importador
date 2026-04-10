@@ -68,6 +68,7 @@
   "import_confirm_show_more": "Mostrar mais",
   "import_confirm_showing_count": "Mostrando {shown} de {total}",
   "import_confirm_button_import": "Importar {count} contatos",
+  "import_confirm_back_to_mapping": "Voltar ao mapeamento",
   "import_confirm_no_changes": "Sem novas alterações",
   "import_processing_title": "Importando contatos...",
   "import_processing_do_not_close": "Não feche esta janela enquanto estiver processando",

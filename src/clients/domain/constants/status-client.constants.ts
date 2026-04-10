@@ -25,4 +25,10 @@ export const STATUS_CLIENT = {
 		order: 3,
 		color: "red",
 	},
+	imported: {
+		translationKey: "client_status_imported",
+		value: EnumClientStatus.IMPORTED,
+		order: 4,
+		color: "cyan",
+	},
 };

@@ -3,6 +3,7 @@ export const EnumClientStatus = {
 	PROSPECT: "prospect",
 	CLIENT: "client",
 	EX_CLIENT: "ex_client",
+	IMPORTED: "imported",
 } as const;
 
 export type EnumClientStatus =
