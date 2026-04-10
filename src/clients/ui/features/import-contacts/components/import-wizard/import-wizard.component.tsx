@@ -161,7 +161,7 @@ export const ImportWizard: FC<ImportWizardProps> = ({ isOpen, onClose }) => {
 							</p>
 						)}
 					</ModalHeader>
-					<ModalBody className="p-0">
+					<ModalBody className="p-0 overflow-x-hidden">
 						<Wizard
 							steps={steps}
 							currentStep={currentStepNumber}
