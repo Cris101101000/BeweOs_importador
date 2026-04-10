@@ -128,12 +128,12 @@ export const AnalysisStep: FC = () => {
 	const isSingleColumn = detectedHeaders.length === 1;
 
 	return (
-		<div className="flex flex-col gap-4 px-2 py-4 sm:p-4 overflow-hidden">
+		<div className="flex flex-col gap-4 px-2 py-4 sm:p-4 min-w-0 max-w-full">
 			{/* Tarjeta del archivo cargado + métricas */}
-			<div className="flex flex-col sm:flex-row flex-wrap items-start gap-3">
+			<div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-start gap-3 min-w-0">
 				{/* Tarjeta archivo */}
 				{file && (
-					<div className="flex items-center gap-3 rounded-xl border border-default-200 dark:border-default-100 bg-default-50 dark:bg-default-100/30 px-4 py-3 min-w-0">
+					<div className="flex items-center gap-3 rounded-xl border border-default-200 dark:border-default-100 bg-default-50 dark:bg-default-100/30 px-4 py-3 min-w-0 max-w-full">
 						<div className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary/10 shrink-0">
 							<IconComponent
 								icon={getFileIcon(file.name)}
@@ -221,7 +221,7 @@ export const AnalysisStep: FC = () => {
 					isCompact
 					removeWrapper
 					classNames={{
-						table: "min-w-full",
+						table: "w-full",
 						th: "bg-default-100 dark:bg-default-50/50 text-xs text-default-500 dark:text-default-400 font-medium",
 						td: "text-xs",
 					}}
@@ -229,7 +229,7 @@ export const AnalysisStep: FC = () => {
 					<TableHeader>
 						{visibleIndices.map((colIdx) => (
 							<TableColumn key={`col-${colIdx}`}>
-								<span className="truncate block max-w-[180px]">
+								<span className="truncate block max-w-[100px] sm:max-w-[180px]">
 									{detectedHeaders[colIdx] || `Col ${colIdx + 1}`}
 								</span>
 							</TableColumn>
@@ -241,7 +241,7 @@ export const AnalysisStep: FC = () => {
 								{visibleIndices.map((colIdx) => (
 									<TableCell key={`cell-${rowIdx}-${colIdx}`}>
 										{row[colIdx] ? (
-											<span className="truncate block max-w-[180px] text-default-700 dark:text-default-500">
+											<span className="truncate block max-w-[100px] sm:max-w-[180px] text-default-700 dark:text-default-500">
 												{row[colIdx]}
 											</span>
 										) : (
