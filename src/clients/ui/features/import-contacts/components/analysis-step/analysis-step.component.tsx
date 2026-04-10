@@ -128,7 +128,7 @@ export const AnalysisStep: FC = () => {
 	const isSingleColumn = detectedHeaders.length === 1;
 
 	return (
-		<div className="flex flex-col gap-4 px-2 py-4 sm:p-4">
+		<div className="flex flex-col gap-4 px-2 py-4 sm:p-4 overflow-hidden">
 			{/* Tarjeta del archivo cargado + métricas */}
 			<div className="flex flex-col sm:flex-row flex-wrap items-start gap-3">
 				{/* Tarjeta archivo */}
@@ -266,6 +266,7 @@ export const AnalysisStep: FC = () => {
 					color="primary"
 					onPress={handleProceedToMapping}
 					isDisabled={totalRecords === 0}
+					className="w-full sm:w-auto shrink-0"
 				>
 					{t("import_analysis_button_map")}
 				</Button>

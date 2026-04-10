@@ -13,9 +13,8 @@ import {
 	EnumProcessStatus,
 } from "@clients/domain/enums/import-status.enum";
 import { useTranslate } from "@tolgee/react";
-import { type FC, useCallback, useMemo, useState } from "react";
+import { type FC, useCallback, useEffect, useMemo, useState } from "react";
 import { useImportStore } from "../../store/useImportStore";
-import "./import-wizard.styles.css";
 import { AnalysisStep } from "../analysis-step/analysis-step.component";
 import { ConfirmationStep } from "../confirmation-step/confirmation-step.component";
 import { MappingStep } from "../mapping-step/mapping-step.component";
@@ -43,6 +42,14 @@ const NUMBER_TO_STEP: Record<number, string> = {
 export const ImportWizard: FC<ImportWizardProps> = ({ isOpen, onClose }) => {
 	const { t } = useTranslate();
 	const [showExitConfirm, setShowExitConfirm] = useState(false);
+	const [isMobile, setIsMobile] = useState(false);
+
+	useEffect(() => {
+		const check = () => setIsMobile(window.innerWidth < 640);
+		check();
+		window.addEventListener("resize", check);
+		return () => window.removeEventListener("resize", check);
+	}, []);
 
 	const { currentStep, processStatus, result, reset, goToStep } =
 		useImportStore();
@@ -137,15 +144,10 @@ export const ImportWizard: FC<ImportWizardProps> = ({ isOpen, onClose }) => {
 			<Modal
 				isOpen={isOpen}
 				onClose={handleClose}
-				size="5xl"
+				size={isMobile ? "full" : "5xl"}
 				scrollBehavior="inside"
 				isDismissable={false}
 				hideCloseButton={processStatus === EnumProcessStatus.PROCESSING}
-				classNames={{
-					base: "import-wizard-modal",
-					body: "import-wizard-modal-body",
-					wrapper: "import-wizard-modal-wrapper",
-				}}
 				aria-labelledby="import-wizard-title"
 			>
 				<ModalContent>

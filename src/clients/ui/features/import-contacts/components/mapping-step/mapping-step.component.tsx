@@ -509,7 +509,7 @@ export const MappingStep: FC = () => {
 	};
 
 	return (
-		<div className="flex flex-col gap-4 px-2 py-4 sm:p-4">
+		<div className="flex flex-col gap-4 px-2 py-4 sm:p-4 overflow-hidden">
 			{/* Instrucciones */}
 			<div className="space-y-1">
 				<p className="text-sm text-default-700">
