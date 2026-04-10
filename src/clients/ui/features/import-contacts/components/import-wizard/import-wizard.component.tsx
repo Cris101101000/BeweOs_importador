@@ -15,6 +15,7 @@ import {
 import { useTranslate } from "@tolgee/react";
 import { type FC, useCallback, useMemo, useState } from "react";
 import { useImportStore } from "../../store/useImportStore";
+import "./import-wizard.styles.css";
 import { AnalysisStep } from "../analysis-step/analysis-step.component";
 import { ConfirmationStep } from "../confirmation-step/confirmation-step.component";
 import { MappingStep } from "../mapping-step/mapping-step.component";
@@ -141,8 +142,9 @@ export const ImportWizard: FC<ImportWizardProps> = ({ isOpen, onClose }) => {
 				isDismissable={false}
 				hideCloseButton={processStatus === EnumProcessStatus.PROCESSING}
 				classNames={{
-					base: "max-sm:m-0 max-sm:rounded-none max-sm:h-full max-sm:max-h-full",
-					body: "max-sm:px-2",
+					base: "import-wizard-modal",
+					body: "import-wizard-modal-body",
+					wrapper: "import-wizard-modal-wrapper",
 				}}
 				aria-labelledby="import-wizard-title"
 			>

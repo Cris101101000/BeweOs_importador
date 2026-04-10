@@ -90,7 +90,7 @@ export const ConfirmationStep: FC = () => {
 	// ── Fase IDLE: resumen + acciones ──
 	if (processStatus === EnumProcessStatus.IDLE) {
 		return (
-			<div className="flex flex-col gap-5 p-4">
+			<div className="flex flex-col gap-5 px-2 py-4 sm:p-4">
 				{/* Health Score con barra proporcional */}
 				<HealthScore
 					validCount={validRecords.length}
@@ -491,7 +491,7 @@ export const ConfirmationStep: FC = () => {
 		const strokeDashoffset = circumference - (progress / 100) * circumference;
 
 		return (
-			<div className="flex flex-col items-center gap-6 p-4">
+			<div className="flex flex-col items-center gap-6 px-2 py-4 sm:p-4">
 				{/* Indicador circular */}
 				<div className="relative flex items-center justify-center">
 					<svg
@@ -564,7 +564,7 @@ export const ConfirmationStep: FC = () => {
 	// ── Fase DONE ──
 	if (processStatus === EnumProcessStatus.DONE && result) {
 		return (
-			<div className="flex flex-col gap-5 p-4">
+			<div className="flex flex-col gap-5 px-2 py-4 sm:p-4">
 				{/* Estado de éxito centrado */}
 				<div className="flex flex-col items-center gap-3 py-4">
 					<div className="flex items-center justify-center w-16 h-16 rounded-full bg-success-100 dark:bg-success-900/20">
@@ -744,7 +744,7 @@ export const ConfirmationStep: FC = () => {
 
 	// ── Fase ERROR ──
 	return (
-		<div className="flex flex-col gap-6 p-4 items-center">
+		<div className="flex flex-col gap-6 px-2 py-4 sm:p-4 items-center">
 			<p className="text-danger-600 dark:text-danger-400 text-center">
 				{t("import_upload_error_format")}
 			</p>

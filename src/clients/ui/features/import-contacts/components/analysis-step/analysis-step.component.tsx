@@ -128,7 +128,7 @@ export const AnalysisStep: FC = () => {
 	const isSingleColumn = detectedHeaders.length === 1;
 
 	return (
-		<div className="flex flex-col gap-4 p-4">
+		<div className="flex flex-col gap-4 px-2 py-4 sm:p-4">
 			{/* Tarjeta del archivo cargado + métricas */}
 			<div className="flex flex-col sm:flex-row flex-wrap items-start gap-3">
 				{/* Tarjeta archivo */}

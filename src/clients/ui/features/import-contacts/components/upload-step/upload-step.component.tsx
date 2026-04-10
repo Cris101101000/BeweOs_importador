@@ -152,7 +152,7 @@ export const UploadStep: FC = () => {
 	const hasInput = !!file || pastedText.trim().length > 0;
 
 	return (
-		<div className="flex flex-col gap-4 p-4">
+		<div className="flex flex-col gap-4 px-2 py-4 sm:p-4">
 			{/* Dropzone o archivo cargado */}
 			{file ? (
 				<div className="flex items-center gap-3 rounded-lg border border-default-200 bg-default-50 dark:bg-default-100/50 p-4">
