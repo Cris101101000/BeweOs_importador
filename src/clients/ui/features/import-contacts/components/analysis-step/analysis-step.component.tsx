@@ -167,20 +167,20 @@ export const AnalysisStep: FC = () => {
 				)}
 
 				{/* Metric cards */}
-				<div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
-					<div className="flex flex-col items-center rounded-xl border border-default-200 dark:border-default-100 bg-default-50 dark:bg-default-100/30 px-5 py-3 min-w-0 sm:min-w-[100px] flex-1 sm:flex-initial">
-						<span className="text-xl font-bold text-default-800 dark:text-default-500">
+				<div className="flex flex-row items-center gap-3">
+					<div className="flex flex-col items-center rounded-xl border border-default-200 dark:border-default-100 bg-default-50 dark:bg-default-100/30 px-4 sm:px-5 py-3 min-w-[80px] sm:min-w-[100px]">
+						<span className="text-lg sm:text-xl font-bold text-default-800 dark:text-default-500">
 							{totalRecords.toLocaleString()}
 						</span>
-						<span className="text-xs text-default-400">
+						<span className="text-[11px] sm:text-xs text-default-400">
 							{t("import_analysis_label_records")}
 						</span>
 					</div>
-					<div className="flex flex-col items-center rounded-xl border border-default-200 dark:border-default-100 bg-default-50 dark:bg-default-100/30 px-5 py-3 min-w-0 sm:min-w-[100px] flex-1 sm:flex-initial">
-						<span className="text-xl font-bold text-default-800 dark:text-default-500">
+					<div className="flex flex-col items-center rounded-xl border border-default-200 dark:border-default-100 bg-default-50 dark:bg-default-100/30 px-4 sm:px-5 py-3 min-w-[80px] sm:min-w-[100px]">
+						<span className="text-lg sm:text-xl font-bold text-default-800 dark:text-default-500">
 							{detectedHeaders.length}
 						</span>
-						<span className="text-xs text-default-400">
+						<span className="text-[11px] sm:text-xs text-default-400">
 							{t("import_analysis_label_columns")}
 						</span>
 					</div>

@@ -587,36 +587,36 @@ export const ConfirmationStep: FC = () => {
 				</div>
 
 				{/* Métricas neutras */}
-				<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-					<div className="flex items-center gap-3 rounded-xl border border-default-200 dark:border-default-100 bg-default-50 dark:bg-default-100/30 px-4 py-3">
+				<div className="grid grid-cols-3 gap-2 sm:gap-3">
+					<div className="flex flex-col items-center gap-1 sm:flex-row sm:items-center sm:gap-3 rounded-xl border border-default-200 dark:border-default-100 bg-default-50 dark:bg-default-100/30 px-2 py-3 sm:px-4">
 						<IconComponent icon="solar:check-circle-outline" size="md" className="text-success" />
-						<div className="flex flex-col">
-							<span className="text-xl font-bold text-default-800 dark:text-default-500">
+						<div className="flex flex-col items-center sm:items-start">
+							<span className="text-lg sm:text-xl font-bold text-default-800 dark:text-default-500">
 								{result.created}
 							</span>
-							<span className="text-xs text-default-400">
+							<span className="text-[10px] sm:text-xs text-default-400 text-center sm:text-left">
 								{t("import_result_created", { count: result.created })}
 							</span>
 						</div>
 					</div>
-					<div className="flex items-center gap-3 rounded-xl border border-default-200 dark:border-default-100 bg-default-50 dark:bg-default-100/30 px-4 py-3">
+					<div className="flex flex-col items-center gap-1 sm:flex-row sm:items-center sm:gap-3 rounded-xl border border-default-200 dark:border-default-100 bg-default-50 dark:bg-default-100/30 px-2 py-3 sm:px-4">
 						<IconComponent icon="solar:refresh-outline" size="md" className="text-warning" />
-						<div className="flex flex-col">
-							<span className="text-xl font-bold text-default-800 dark:text-default-500">
+						<div className="flex flex-col items-center sm:items-start">
+							<span className="text-lg sm:text-xl font-bold text-default-800 dark:text-default-500">
 								{result.updated}
 							</span>
-							<span className="text-xs text-default-400">
+							<span className="text-[10px] sm:text-xs text-default-400 text-center sm:text-left">
 								{t("import_result_updated", { count: result.updated })}
 							</span>
 						</div>
 					</div>
-					<div className="flex items-center gap-3 rounded-xl border border-default-200 dark:border-default-100 bg-default-50 dark:bg-default-100/30 px-4 py-3">
+					<div className="flex flex-col items-center gap-1 sm:flex-row sm:items-center sm:gap-3 rounded-xl border border-default-200 dark:border-default-100 bg-default-50 dark:bg-default-100/30 px-2 py-3 sm:px-4">
 						<IconComponent icon="solar:close-circle-outline" size="md" className="text-danger" />
-						<div className="flex flex-col">
-							<span className="text-xl font-bold text-default-800 dark:text-default-500">
+						<div className="flex flex-col items-center sm:items-start">
+							<span className="text-lg sm:text-xl font-bold text-default-800 dark:text-default-500">
 								{result.failed}
 							</span>
-							<span className="text-xs text-default-400">
+							<span className="text-[10px] sm:text-xs text-default-400 text-center sm:text-left">
 								{t("import_result_failed", { count: result.failed })}
 							</span>
 						</div>

@@ -492,7 +492,7 @@ export const MappingStep: FC = () => {
 						</>
 					)}
 				</TableCell>
-				<TableCell>
+				<TableCell className="hidden sm:table-cell">
 					<div className="flex flex-col gap-0.5">
 						{preview.map((val, idx) => (
 							<span
@@ -594,7 +594,7 @@ export const MappingStep: FC = () => {
 				<TableHeader>
 					<TableColumn>{t("import_mapping_your_field")}</TableColumn>
 					<TableColumn>{t("import_mapping_bewe_field")}</TableColumn>
-					<TableColumn>{t("import_mapping_preview")}</TableColumn>
+					<TableColumn className="hidden sm:table-cell">{t("import_mapping_preview")}</TableColumn>
 				</TableHeader>
 				<TableBody>
 					{mappedRows.map(renderMappingRow)}
@@ -631,7 +631,7 @@ export const MappingStep: FC = () => {
 							<TableHeader>
 								<TableColumn>{t("import_mapping_your_field")}</TableColumn>
 								<TableColumn>{t("import_mapping_bewe_field")}</TableColumn>
-								<TableColumn>{t("import_mapping_preview")}</TableColumn>
+								<TableColumn className="hidden sm:table-cell">{t("import_mapping_preview")}</TableColumn>
 							</TableHeader>
 							<TableBody>
 								{unmappedRows.map(renderMappingRow)}

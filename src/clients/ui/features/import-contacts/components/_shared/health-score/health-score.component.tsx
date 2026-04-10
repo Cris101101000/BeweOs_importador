@@ -81,25 +81,25 @@ export const HealthScore = ({
 			</div>
 
 			{/* Tarjetas de métricas neutras */}
-			<div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
+			<div className="grid grid-cols-3 gap-2 sm:gap-3">
 				{cards.map((card) => (
 					<div
 						key={card.labelKey}
-						className="flex items-center gap-3 rounded-xl border border-default-200 dark:border-default-100 bg-default-50 dark:bg-default-100/30 px-4 py-3"
+						className="flex flex-col items-center gap-1 sm:flex-row sm:items-center sm:gap-3 rounded-xl border border-default-200 dark:border-default-100 bg-default-50 dark:bg-default-100/30 px-2 py-3 sm:px-4"
 					>
 						<IconComponent
 							icon={card.icon}
 							className={card.iconColor}
 							size="md"
 						/>
-						<div className="flex flex-col">
-							<span className="text-xs text-default-400">
+						<div className="flex flex-col items-center sm:items-start">
+							<span className="text-[10px] sm:text-xs text-default-400 text-center sm:text-left">
 								{t(card.labelKey)}
 							</span>
-							<span className="text-xl font-bold text-default-800 dark:text-default-500">
+							<span className="text-lg sm:text-xl font-bold text-default-800 dark:text-default-500">
 								{card.count.toLocaleString()}
 							</span>
-							<span className="text-xs text-default-400">
+							<span className="text-[10px] sm:text-xs text-default-400">
 								{card.percentage}%
 							</span>
 						</div>
