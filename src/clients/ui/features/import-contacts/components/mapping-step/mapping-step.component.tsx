@@ -2,6 +2,7 @@ import {
 	Button,
 	Chip,
 	IconComponent,
+	Input,
 	Select,
 	SelectItem,
 	Table,
@@ -30,6 +31,7 @@ const PROPERTY_TYPE_OPTIONS = [
 	{ key: EnumCustomPropertyType.NUMBER, label: "Número", icon: "solar:hashtag-outline" },
 	{ key: EnumCustomPropertyType.DATE, label: "Fecha", icon: "solar:calendar-outline" },
 	{ key: EnumCustomPropertyType.BOOLEAN, label: "Sí/No", icon: "solar:check-circle-outline" },
+	{ key: EnumCustomPropertyType.SELECT, label: "Opciones", icon: "solar:list-check-outline" },
 ];
 
 /** Detecta el tipo probable de una propiedad según muestras de datos */
@@ -49,6 +51,12 @@ function detectPropertyType(values: string[]): EnumCustomPropertyType {
 	const allDates = nonEmpty.every((v) => datePattern.test(v.trim()));
 	if (allDates) return EnumCustomPropertyType.DATE;
 
+	// Si hay pocos valores únicos respecto al total, es probable que sea un SELECT
+	const uniqueValues = new Set(nonEmpty.map((v) => v.trim().toLowerCase()));
+	if (uniqueValues.size <= Math.max(2, nonEmpty.length * 0.5) && uniqueValues.size <= 20) {
+		return EnumCustomPropertyType.SELECT;
+	}
+
 	return EnumCustomPropertyType.TEXT;
 }
 
@@ -58,6 +66,9 @@ export const MappingStep: FC = () => {
 	const [showUnmapped, setShowUnmapped] = useState(false);
 	const [creatingCustomFor, setCreatingCustomFor] = useState<number | null>(null);
 	const [customTypeSelection, setCustomTypeSelection] = useState<EnumCustomPropertyType>(EnumCustomPropertyType.TEXT);
+	const [customPropertyName, setCustomPropertyName] = useState("");
+	const [customSelectOptions, setCustomSelectOptions] = useState<string[]>([]);
+	const [newOptionValue, setNewOptionValue] = useState("");
 	const { validateAndSeparate } = useImportValidation();
 
 	const {
@@ -155,9 +166,21 @@ export const MappingStep: FC = () => {
 			const preview = rawData.slice(0, 5).map((row) => row[sourceIndex] || "").filter(Boolean);
 			const detectedType = detectPropertyType(preview);
 			setCustomTypeSelection(detectedType);
+
+			// Auto-extraer opciones únicas de toda la columna si es tipo SELECT
+			if (detectedType === EnumCustomPropertyType.SELECT) {
+				const allValues = rawData.map((row) => row[sourceIndex] || "").filter(Boolean);
+				const uniqueOptions = [...new Set(allValues.map((v) => v.trim()))].filter(Boolean);
+				setCustomSelectOptions(uniqueOptions);
+			} else {
+				setCustomSelectOptions([]);
+			}
+			setNewOptionValue("");
+			const mapping = fieldMappings.find((m) => m.sourceIndex === sourceIndex);
+			setCustomPropertyName(mapping?.sourceColumn || `Col ${sourceIndex + 1}`);
 			setCreatingCustomFor(sourceIndex);
 		},
-		[rawData],
+		[rawData, fieldMappings],
 	);
 
 	// Confirmar creación de propiedad personalizada
@@ -167,14 +190,17 @@ export const MappingStep: FC = () => {
 		const mapping = fieldMappings.find((m) => m.sourceIndex === creatingCustomFor);
 		if (!mapping) return;
 
-		const columnName = mapping.sourceColumn || `Col ${creatingCustomFor + 1}`;
-		const key = `${CUSTOM_PROPERTY_PREFIX}${columnName.toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "")}`;
+		const propertyLabel = customPropertyName.trim() || mapping.sourceColumn || `Col ${creatingCustomFor + 1}`;
+		const key = `${CUSTOM_PROPERTY_PREFIX}${propertyLabel.toLowerCase().replace(/s+/g, "_").replace(/[^a-z0-9_]/g, "")}`;
 
 		addCustomProperty({
 			key,
-			label: columnName,
+			label: propertyLabel,
 			type: customTypeSelection,
-			sourceColumn: columnName,
+			sourceColumn: mapping.sourceColumn || `Col ${creatingCustomFor + 1}`,
+			...(customTypeSelection === EnumCustomPropertyType.SELECT && customSelectOptions.length > 0
+				? { options: customSelectOptions }
+				: {}),
 		});
 
 		const updated: IFieldMapping[] = fieldMappings.map((m) =>
@@ -184,7 +210,7 @@ export const MappingStep: FC = () => {
 		);
 		setFieldMappings(updated);
 		setCreatingCustomFor(null);
-	}, [creatingCustomFor, fieldMappings, customTypeSelection, addCustomProperty, setFieldMappings]);
+	}, [creatingCustomFor, fieldMappings, customTypeSelection, customPropertyName, customSelectOptions, addCustomProperty, setFieldMappings]);
 
 	const handleValidate = useCallback(async () => {
 		setIsValidating(true);
@@ -262,6 +288,14 @@ export const MappingStep: FC = () => {
 							<p className="text-xs text-default-500">
 								{t("import_mapping_custom_type_label")}: <span className="font-medium">{mapping.sourceColumn}</span>
 							</p>
+							<Input
+								size="sm"
+								label="Nombre de la propiedad"
+								placeholder="Ej: Puntos, Categoría..."
+								value={customPropertyName}
+								onValueChange={setCustomPropertyName}
+								className="max-w-64"
+							/>
 							<div className="flex items-center gap-2">
 								{PROPERTY_TYPE_OPTIONS.map((opt) => (
 									<Button
@@ -269,18 +303,86 @@ export const MappingStep: FC = () => {
 										size="sm"
 										variant={customTypeSelection === opt.key ? "solid" : "flat"}
 										color={customTypeSelection === opt.key ? "secondary" : "default"}
-										onPress={() => setCustomTypeSelection(opt.key)}
+										onPress={() => {
+											setCustomTypeSelection(opt.key);
+											if (opt.key === EnumCustomPropertyType.SELECT && creatingCustomFor !== null) {
+												const allValues = rawData.map((row) => row[creatingCustomFor] || "").filter(Boolean);
+												const uniqueOptions = [...new Set(allValues.map((v) => v.trim()))].filter(Boolean);
+												setCustomSelectOptions(uniqueOptions);
+											} else if (opt.key !== EnumCustomPropertyType.SELECT) {
+												setCustomSelectOptions([]);
+											}
+										}}
 										startContent={<IconComponent icon={opt.icon} size="sm" />}
 									>
 										{opt.label}
 									</Button>
 								))}
 							</div>
+							{/* Editor de opciones para tipo SELECT */}
+							{customTypeSelection === EnumCustomPropertyType.SELECT && (
+								<div className="flex flex-col gap-2 mt-1">
+									<p className="text-xs text-default-500">
+										Opciones disponibles:
+									</p>
+									<div className="flex flex-wrap gap-1">
+										{customSelectOptions.map((opt) => (
+											<Chip
+												key={opt}
+												size="sm"
+												variant="flat"
+												color="secondary"
+												onClose={() =>
+													setCustomSelectOptions((prev) =>
+														prev.filter((o) => o !== opt),
+													)
+												}
+											>
+												{opt}
+											</Chip>
+										))}
+									</div>
+									<div className="flex items-center gap-2">
+										<Input
+											size="sm"
+											placeholder="Agregar opción..."
+											value={newOptionValue}
+											onValueChange={setNewOptionValue}
+											className="max-w-48"
+											onKeyDown={(e) => {
+												if (e.key === "Enter" && newOptionValue.trim()) {
+													const val = newOptionValue.trim();
+													if (!customSelectOptions.includes(val)) {
+														setCustomSelectOptions((prev) => [...prev, val]);
+													}
+													setNewOptionValue("");
+												}
+											}}
+										/>
+										<Button
+											size="sm"
+											variant="flat"
+											color="secondary"
+											isDisabled={!newOptionValue.trim()}
+											onPress={() => {
+												const val = newOptionValue.trim();
+												if (val && !customSelectOptions.includes(val)) {
+													setCustomSelectOptions((prev) => [...prev, val]);
+												}
+												setNewOptionValue("");
+											}}
+										>
+											Agregar
+										</Button>
+									</div>
+								</div>
+							)}
 							<div className="flex items-center gap-2">
 								<Button
 									size="sm"
 									color="secondary"
 									onPress={handleConfirmCustomProperty}
+									isDisabled={!customPropertyName.trim() || (customTypeSelection === EnumCustomPropertyType.SELECT && customSelectOptions.length === 0)}
 								>
 									{t("import_mapping_custom_confirm")}
 								</Button>
@@ -300,6 +402,10 @@ export const MappingStep: FC = () => {
 								selectedKeys={mapping.beweField ? [mapping.beweField] : []}
 								onSelectionChange={(keys) => {
 									const selected = Array.from(keys)[0] as string | undefined;
+									if (selected === "__skip_field__") {
+										handleFieldChange(mapping.sourceIndex, null);
+										return;
+									}
 									if (selected === "__create_custom__") {
 										handleStartCustomProperty(mapping.sourceIndex);
 										return;
@@ -325,6 +431,16 @@ export const MappingStep: FC = () => {
 								}}
 							>
 								{[
+									<SelectItem
+										key="__skip_field__"
+										textValue={t("import_mapping_do_not_import")}
+										className="border-b border-default-200 mb-1"
+									>
+										<div className="flex items-center gap-2 text-default-400">
+											<IconComponent icon="solar:close-circle-outline" size="sm" />
+											{t("import_mapping_do_not_import")}
+										</div>
+									</SelectItem>,
 									...ALL_IMPORT_FIELDS.map((field) => (
 										<SelectItem
 											key={field.key}
@@ -339,12 +455,11 @@ export const MappingStep: FC = () => {
 										</SelectItem>
 									)),
 									...customProperties
-										.filter((cp) => cp.key !== mapping.beweField)
 										.map((cp) => (
 											<SelectItem
 												key={cp.key}
 												textValue={cp.label}
-												isDisabled={assignedFields.has(cp.key)}
+												isDisabled={assignedFields.has(cp.key) && mapping.beweField !== cp.key}
 											>
 												<div className="flex items-center gap-2">
 													{cp.label}

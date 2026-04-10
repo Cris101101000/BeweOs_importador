@@ -34,17 +34,14 @@ const MOCK_AI_EXTRACTED_HEADERS = [
   "Nombre",
   "Apellido",
   "Correo",
-  "Teléfono",
-  "País",
-  "Notas",
 ];
 
 const MOCK_AI_EXTRACTED_DATA: string[][] = [
-  ["Ana", "García", "ana@test.com", "+573001112233", "Colombia", "Cliente frecuente"],
-  ["Pedro", "Martínez", "pedro@test.com", "+5491166778899", "Argentina", "Nuevo lead"],
-  ["Juan", "Pérez", "juan@ejemplo.com", "+573009998877", "Colombia", "Ya existe"],
-  ["Laura", "Torres", "laura@test.com", "+573002223344", "Colombia", ""],
-  ["Miguel", "Santos", "miguel@test.com", "+5511912345678", "Brasil", "Referido"],
+  ["Ana", "García", "ana@test.com"],
+  ["Pedro", "Martínez", "pedro@test.com"],
+  ["Juan", "Pérez", "juan@ejemplo.com"],
+  ["Laura", "Torres", "laura@test.com"],
+  ["Miguel", "Santos", "miguel@test.com"],
 ];
 
 export class ImportContactsMock {

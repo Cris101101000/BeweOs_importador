@@ -29,6 +29,7 @@ export const EnumCustomPropertyType = {
 	NUMBER: "number",
 	DATE: "date",
 	BOOLEAN: "boolean",
+	SELECT: "select",
 } as const;
 
 export type EnumCustomPropertyType = (typeof EnumCustomPropertyType)[keyof typeof EnumCustomPropertyType];
@@ -38,6 +39,7 @@ export interface ICustomProperty {
 	label: string;
 	type: EnumCustomPropertyType;
 	sourceColumn: string;
+	options?: string[];
 }
 
 export interface IImportContact {
@@ -46,6 +48,7 @@ export interface IImportContact {
 	email: string;
 	phone: string;
 	country: string;
+	birthdate?: string;
 	tags?: string[];
 	status?: string;
 	category?: string;

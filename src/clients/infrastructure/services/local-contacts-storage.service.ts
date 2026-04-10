@@ -107,7 +107,7 @@ export class LocalContactsStorageService {
 						createdAt: new Date().toISOString(),
 						updatedAt: new Date().toISOString(),
 						isActive: true,
-						status: contact.status || "prospect",
+						status: contact.status || "imported",
 					};
 					existing.push(newContact);
 					if (email) emailIndex.set(email, existing.length - 1);
@@ -206,5 +206,55 @@ export class LocalContactsStorageService {
 
 	private saveAll(contacts: GetClientResponseDto[]): void {
 		localStorage.setItem(STORAGE_KEY, JSON.stringify(contacts));
+	}
+}
+
+const IMPORT_LOG_KEY = "bewe_import_log";
+
+export interface IImportLogEntry {
+	id: string;
+	date: string;
+	fileName: string;
+	totalProcessed: number;
+	created: number;
+	updated: number;
+	failed: number;
+	invalidCount: number;
+}
+
+/**
+ * Servicio para registrar el historial de importaciones realizadas.
+ */
+export class ImportLogService {
+	private static instance: ImportLogService;
+
+	static getInstance(): ImportLogService {
+		if (!this.instance) {
+			this.instance = new ImportLogService();
+		}
+		return this.instance;
+	}
+
+	getAll(): IImportLogEntry[] {
+		try {
+			const raw = localStorage.getItem(IMPORT_LOG_KEY);
+			if (!raw) return [];
+			return JSON.parse(raw) as IImportLogEntry[];
+		} catch {
+			return [];
+		}
+	}
+
+	add(entry: Omit<IImportLogEntry, "id" | "date">): IImportLogEntry {
+		const logs = this.getAll();
+		const newEntry: IImportLogEntry = {
+			...entry,
+			id: crypto.randomUUID(),
+			date: new Date().toISOString(),
+		};
+		logs.unshift(newEntry);
+		// Mantener máximo 50 registros
+		localStorage.setItem(IMPORT_LOG_KEY, JSON.stringify(logs.slice(0, 50)));
+		return newEntry;
 	}
 }

@@ -7,7 +7,7 @@ export interface IImportField {
 
 /**
  * Campos obligatorios para crear un contacto:
- * Nombre, Apellido, Email y Teléfono
+ * Nombre, Email y Teléfono
  */
 export const REQUIRED_IMPORT_FIELDS: IImportField[] = [
 	{
@@ -19,17 +19,6 @@ export const REQUIRED_IMPORT_FIELDS: IImportField[] = [
 			"nome", "primeiro_nome", "primer nombre", "nombres",
 			"nombre completo", "nombre cliente", "nombre del cliente",
 			"given name", "given_name",
-		],
-	},
-	{
-		key: "lastName",
-		label: "Apellido",
-		required: true,
-		synonyms: [
-			"apellido", "apellidos", "last_name", "lastname", "last name", "surname",
-			"sobrenome", "apelido", "primer apellido", "apellido paterno",
-			"apellido 1", "apellido1", "apellido materno", "segundo apellido",
-			"family name", "family_name",
 		],
 	},
 	{
@@ -59,6 +48,28 @@ export const REQUIRED_IMPORT_FIELDS: IImportField[] = [
 
 export const OPTIONAL_IMPORT_FIELDS: IImportField[] = [
 	{
+		key: "lastName",
+		label: "Apellido",
+		required: false,
+		synonyms: [
+			"apellido", "apellidos", "last_name", "lastname", "last name", "surname",
+			"sobrenome", "apelido", "primer apellido", "apellido paterno",
+			"apellido 1", "apellido1", "apellido materno", "segundo apellido",
+			"family name", "family_name",
+		],
+	},
+	{
+		key: "birthdate",
+		label: "Fecha de cumpleaños",
+		required: false,
+		synonyms: [
+			"cumpleaños", "cumpleanos", "fecha de nacimiento", "nacimiento",
+			"birthdate", "birthday", "birth date", "birth_date",
+			"fecha nacimiento", "fecha_nacimiento", "aniversario",
+			"date of birth", "dob", "data de nascimento",
+		],
+	},
+	{
 		key: "country",
 		label: "País",
 		required: false,
@@ -74,9 +85,12 @@ export const OPTIONAL_IMPORT_FIELDS: IImportField[] = [
 	},
 	{
 		key: "status",
-		label: "Estado",
+		label: "Estado (Etapa del cliente)",
 		required: false,
-		synonyms: ["estado", "status", "state"],
+		synonyms: [
+			"estado", "status", "state", "etapa", "fase",
+			"stage", "ciclo", "estado del cliente",
+		],
 	},
 	{
 		key: "category",
@@ -86,9 +100,13 @@ export const OPTIONAL_IMPORT_FIELDS: IImportField[] = [
 	},
 	{
 		key: "potential",
-		label: "Potencial",
+		label: "Potencial (Nivel de interés)",
 		required: false,
-		synonyms: ["potencial", "potential", "lead score"],
+		synonyms: [
+			"potencial", "potential", "lead score", "nivel de interés",
+			"nivel de interes", "interés", "interes", "prioridad",
+			"priority", "tier", "nivel",
+		],
 	},
 	{
 		key: "gender",

@@ -68,6 +68,7 @@
   "import_confirm_show_more": "Show more",
   "import_confirm_showing_count": "Showing {shown} of {total}",
   "import_confirm_button_import": "Import {count} contacts",
+  "import_confirm_back_to_mapping": "Back to mapping",
   "import_confirm_no_changes": "No new changes",
   "import_confirm_invalid_reason": "Error reason",
   "import_confirm_invalid_showing_partial": "Showing {shown} of {total} invalid records. Download the CSV to see all.",

@@ -18,7 +18,7 @@ const toTitleCase = (str: string): string => {
 	return str
 		.trim()
 		.toLowerCase()
-		.replace(/\b\w/g, (char) => char.toUpperCase());
+		.replace(/(^|\s)\S/g, (char) => char.toUpperCase());
 };
 
 /**
@@ -26,6 +26,26 @@ const toTitleCase = (str: string): string => {
  */
 const cleanPhone = (phone: string): string => {
 	return phone.replace(/[^\d+]/g, "");
+};
+
+/**
+ * Separa automáticamente nombre completo en nombre y apellido.
+ * Primera palabra → firstName, resto → lastName.
+ * Ejemplo: "Juan Carlos Pérez" → { firstName: "Juan Carlos", lastName: "Pérez" }
+ *
+ * Estrategia: la última palabra es el apellido, el resto es el nombre.
+ * Esto cubre mejor casos como "María José García" donde hay nombres compuestos.
+ */
+const splitFullName = (
+	fullName: string,
+): { firstName: string; lastName: string } => {
+	const parts = fullName.trim().split(/\s+/);
+	if (parts.length <= 1) {
+		return { firstName: fullName.trim(), lastName: "" };
+	}
+	const lastName = parts[parts.length - 1];
+	const firstName = parts.slice(0, -1).join(" ");
+	return { firstName, lastName };
 };
 
 /**
@@ -59,8 +79,9 @@ const validateRecord = (record: Partial<IImportContact>): string[] => {
 		reasons.push("Nombre inválido o vacío (mínimo 2 caracteres)");
 	}
 
-	if (!record.lastName || record.lastName.trim().length < MIN_NAME_LENGTH) {
-		reasons.push("Apellido inválido o vacío (mínimo 2 caracteres)");
+	// Apellido es opcional: solo validar formato si viene con valor
+	if (record.lastName && record.lastName.trim().length > 0 && record.lastName.trim().length < MIN_NAME_LENGTH) {
+		reasons.push("Apellido inválido (mínimo 2 caracteres)");
 	}
 
 	if (!record.email || !EMAIL_REGEX.test(record.email.trim())) {
@@ -69,7 +90,9 @@ const validateRecord = (record: Partial<IImportContact>): string[] => {
 
 	if (record.phone) {
 		const digits = record.phone.replace(/\D/g, "");
-		if (digits.length < MIN_PHONE_DIGITS) {
+		if (digits.length === 0) {
+			reasons.push("Teléfono no contiene números válidos");
+		} else if (digits.length < MIN_PHONE_DIGITS) {
 			reasons.push("Teléfono inválido (mínimo 7 dígitos)");
 		}
 	} else {
@@ -126,6 +149,17 @@ export const useImportValidation = () => {
 						(record as Record<string, unknown>)[mapping.beweField] =
 							value;
 					}
+				}
+
+				// Auto-separar nombre completo si lastName no está mapeado
+				if (
+					record.firstName &&
+					record.firstName.trim().includes(" ") &&
+					(!record.lastName || record.lastName.trim().length === 0)
+				) {
+					const { firstName, lastName } = splitFullName(record.firstName);
+					record.firstName = firstName;
+					record.lastName = lastName;
 				}
 
 				// Normalizar

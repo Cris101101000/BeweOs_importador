@@ -13,8 +13,9 @@ import {
 	TableHeader,
 	TableRow,
 } from "@beweco/aurora-ui";
-import { EnumProcessStatus } from "@clients/domain/enums/import-status.enum";
+import { EnumImportStep, EnumProcessStatus } from "@clients/domain/enums/import-status.enum";
 import { EnumDuplicateAction } from "@clients/domain/interfaces/import-contact.interface";
+import { ImportLogService } from "@clients/infrastructure/services/local-contacts-storage.service";
 import { useTranslate } from "@tolgee/react";
 import { type FC, useCallback, useMemo, useState } from "react";
 import { useImportDownloads } from "../../hooks/use-import-downloads.hook";
@@ -32,6 +33,7 @@ export const ConfirmationStep: FC = () => {
 
 	const [invalidVisible, setInvalidVisible] = useState(PAGE_SIZE);
 	const [duplicateVisible, setDuplicateVisible] = useState(PAGE_SIZE);
+	const [validVisible, setValidVisible] = useState(PAGE_SIZE);
 
 	const {
 		validRecords,
@@ -44,6 +46,7 @@ export const ConfirmationStep: FC = () => {
 		file,
 		setDuplicateAction,
 		setBulkDuplicateAction,
+		goToStep,
 		reset,
 	} = useImportStore();
 
@@ -57,6 +60,11 @@ export const ConfirmationStep: FC = () => {
 		return validRecords.length + updateCount + createNewCount;
 	}, [validRecords, duplicateRecords]);
 
+	const visibleValid = useMemo(
+		() => validRecords.slice(0, validVisible),
+		[validRecords, validVisible],
+	);
+
 	const visibleInvalid = useMemo(
 		() => invalidRecords.slice(0, invalidVisible),
 		[invalidRecords, invalidVisible],
@@ -66,6 +74,10 @@ export const ConfirmationStep: FC = () => {
 		() => duplicateRecords.slice(0, duplicateVisible),
 		[duplicateRecords, duplicateVisible],
 	);
+
+	const handleShowMoreValid = useCallback(() => {
+		setValidVisible((prev) => prev + PAGE_SIZE);
+	}, []);
 
 	const handleShowMoreInvalid = useCallback(() => {
 		setInvalidVisible((prev) => prev + PAGE_SIZE);
@@ -85,6 +97,95 @@ export const ConfirmationStep: FC = () => {
 					duplicateCount={duplicateRecords.length}
 					invalidCount={invalidRecords.length}
 				/>
+
+				{/* Vista previa de registros válidos */}
+				{validRecords.length > 0 && (
+					<Accordion variant="bordered">
+						<AccordionItem
+							key="valid-preview"
+							title={
+								<div className="flex items-center gap-3">
+									<div className="flex items-center justify-center w-8 h-8 rounded-lg bg-success-50 dark:bg-success-900/20 shrink-0">
+										<IconComponent
+											icon="solar:eye-outline"
+											size="sm"
+											className="text-success"
+										/>
+									</div>
+									<div className="text-left">
+										<p className="text-sm font-medium text-success-600 dark:text-success-400">
+											{t("import_confirm_preview_valid", {
+												count: validRecords.length,
+											})}
+										</p>
+										<p className="text-xs text-default-400">
+											{t("import_confirm_preview_hint")}
+										</p>
+									</div>
+								</div>
+							}
+							classNames={{
+								base: "border-success-200 dark:border-success-800/30",
+							}}
+						>
+							<Table
+								aria-label="Vista previa de registros válidos"
+								isCompact
+								removeWrapper
+								classNames={{
+									th: "bg-default-100 dark:bg-default-50/50 text-xs text-default-500 font-medium",
+								}}
+							>
+								<TableHeader>
+									<TableColumn>#</TableColumn>
+									<TableColumn>Nombre</TableColumn>
+									<TableColumn>Email</TableColumn>
+									<TableColumn>Teléfono</TableColumn>
+								</TableHeader>
+								<TableBody>
+									{visibleValid.map((rec, idx) => (
+										<TableRow key={`valid-${idx}`}>
+											<TableCell>
+												<span className="text-xs text-default-400">{idx + 1}</span>
+											</TableCell>
+											<TableCell>
+												<span className="text-xs truncate block max-w-[160px]">
+													{rec.firstName} {rec.lastName || ""}
+												</span>
+											</TableCell>
+											<TableCell>
+												<span className="text-xs truncate block max-w-[180px]">
+													{rec.email || "—"}
+												</span>
+											</TableCell>
+											<TableCell>
+												<span className="text-xs truncate block max-w-[120px]">
+													{rec.phone || "—"}
+												</span>
+											</TableCell>
+										</TableRow>
+									))}
+								</TableBody>
+							</Table>
+
+							{/* Paginación válidos */}
+							<div className="flex items-center justify-between mt-3">
+								<p className="text-xs text-default-400">
+									Mostrando {Math.min(validVisible, validRecords.length)} de {validRecords.length}
+								</p>
+								{validVisible < validRecords.length && (
+									<Button
+										variant="light"
+										size="sm"
+										onPress={handleShowMoreValid}
+									>
+										{t("import_confirm_show_more")}
+									</Button>
+								)}
+							</div>
+						</AccordionItem>
+					</Accordion>
+				)}
 
 				{/* Tarjeta de errores accionable */}
 				{invalidRecords.length > 0 && (
@@ -352,7 +453,15 @@ export const ConfirmationStep: FC = () => {
 				</div>
 
 				{/* Botón importar */}
-				<div className="flex justify-end">
+				<div className="flex items-center justify-between">
+					<Button
+						variant="light"
+						size="sm"
+						onPress={() => goToStep(EnumImportStep.MAPPING)}
+						startContent={<IconComponent icon="solar:arrow-left-outline" size="sm" />}
+					>
+						{t("import_confirm_back_to_mapping")}
+					</Button>
 					<Button
 						color="primary"
 						size="lg"
@@ -562,6 +671,48 @@ export const ConfirmationStep: FC = () => {
 					</button>
 				)}
 
+
+				{/* Historial de importaciones */}
+				<Accordion variant="light">
+					<AccordionItem
+						key="import-history"
+						title={
+							<span className="text-xs text-default-400">
+								Historial de importaciones
+							</span>
+						}
+					>
+						<div className="flex flex-col gap-2">
+							{ImportLogService.getInstance().getAll().slice(0, 10).map((log) => (
+								<div
+									key={log.id}
+									className="flex items-center justify-between p-2 rounded-lg bg-default-50 dark:bg-default-100/30 text-xs"
+								>
+									<div className="flex flex-col gap-0.5">
+										<span className="font-medium text-default-700 dark:text-default-500">
+											{log.fileName}
+										</span>
+										<span className="text-default-400">
+											{new Date(log.date).toLocaleString()}
+										</span>
+									</div>
+									<div className="flex items-center gap-3">
+										<span className="text-success">{log.created} creados</span>
+										<span className="text-warning">{log.updated} actualizados</span>
+										{log.failed > 0 && (
+											<span className="text-danger">{log.failed} errores</span>
+										)}
+									</div>
+								</div>
+							))}
+							{ImportLogService.getInstance().getAll().length === 0 && (
+								<p className="text-xs text-default-400 text-center py-2">
+									No hay importaciones registradas
+								</p>
+							)}
+						</div>
+					</AccordionItem>
+				</Accordion>
 				{/* Doble acción en footer */}
 				<div className="flex items-center justify-end gap-3 pt-2">
 					<Button
