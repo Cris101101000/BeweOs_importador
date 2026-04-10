@@ -172,6 +172,7 @@ export const ImportWizard: FC<ImportWizardProps> = ({ isOpen, onClose }) => {
 								showNavigationButtons: false,
 							}}
 							minHeight="auto"
+							className="import-wizard-content"
 						/>
 					</ModalBody>
 					{processStatus === EnumProcessStatus.DONE && result && (

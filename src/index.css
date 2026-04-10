@@ -157,6 +157,13 @@
 	animation: border-slide-down 5s linear infinite;
 }
 
+/* Import wizard: reducir padding interno del Wizard en móvil */
+@media (max-width: 639px) {
+	.import-wizard-content .flex-1.p-8 {
+		padding: 0.25rem !important;
+	}
+}
+
 /* Utility class to hide scrollbar while keeping scroll functionality */
 .scrollbar-hide {
 	-ms-overflow-style: none; /* IE and Edge */
