@@ -16,15 +16,12 @@ import {
 } from "@clients/domain/constants/import-fields.constants";
 import { EnumImportStep } from "@clients/domain/enums/import-status.enum";
 import { useTranslate } from "@tolgee/react";
-import { type FC, useMemo } from "react";
+import { type FC, useEffect, useMemo, useState } from "react";
 import { useFieldMapping } from "../../hooks/use-field-mapping.hook";
 import { useImportStore } from "../../store/useImportStore";
 
-/**
- * Máximo de columnas a mostrar en el preview para evitar overflow horizontal.
- * Priorizamos las que matchean con campos obligatorios.
- */
-const MAX_PREVIEW_COLUMNS = 5;
+const MAX_PREVIEW_COLUMNS_MOBILE = 2;
+const MAX_PREVIEW_COLUMNS_DESKTOP = 5;
 
 /**
  * Retorna el icono según la extensión del archivo
@@ -57,7 +54,7 @@ const formatFileSize = (bytes: number): string => {
 /**
  * Detecta los índices de las columnas que matchean con campos obligatorios.
  */
-const getRelevantColumnIndices = (headers: string[]): number[] => {
+const getRelevantColumnIndices = (headers: string[], maxColumns: number): number[] => {
 	const requiredSynonyms = REQUIRED_IMPORT_FIELDS.flatMap((f) => [
 		f.key.toLowerCase(),
 		f.label.toLowerCase(),
@@ -76,10 +73,9 @@ const getRelevantColumnIndices = (headers: string[]): number[] => {
 		}
 	}
 
-	// Primero las obligatorias, luego las opcionales hasta completar el máximo
 	const result = [...matchedIndices];
 	for (const idx of unmatchedIndices) {
-		if (result.length >= MAX_PREVIEW_COLUMNS) break;
+		if (result.length >= maxColumns) break;
 		result.push(idx);
 	}
 
@@ -89,6 +85,14 @@ const getRelevantColumnIndices = (headers: string[]): number[] => {
 export const AnalysisStep: FC = () => {
 	const { t } = useTranslate();
 	const { autoMatch } = useFieldMapping();
+	const [isMobile, setIsMobile] = useState(false);
+
+	useEffect(() => {
+		const check = () => setIsMobile(window.innerWidth < 640);
+		check();
+		window.addEventListener("resize", check);
+		return () => window.removeEventListener("resize", check);
+	}, []);
 
 	const {
 		rawData,
@@ -102,11 +106,13 @@ export const AnalysisStep: FC = () => {
 		goToStep,
 	} = useImportStore();
 
+	const maxColumns = isMobile ? MAX_PREVIEW_COLUMNS_MOBILE : MAX_PREVIEW_COLUMNS_DESKTOP;
+
 	const previewData = useMemo(() => rawData.slice(0, PREVIEW_ROWS), [rawData]);
 
 	const visibleIndices = useMemo(
-		() => getRelevantColumnIndices(detectedHeaders),
-		[detectedHeaders],
+		() => getRelevantColumnIndices(detectedHeaders, maxColumns),
+		[detectedHeaders, maxColumns],
 	);
 
 	const hiddenColumns = detectedHeaders.length - visibleIndices.length;
@@ -259,7 +265,7 @@ export const AnalysisStep: FC = () => {
 
 			{/* Footer: nota de campos + botón mapear */}
 			<div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-2">
-				<p className="text-xs text-default-400">
+				<p className="text-xs text-default-400 leading-relaxed">
 					{t("import_analysis_fields_note")}
 				</p>
 				<Button
