@@ -14,6 +14,7 @@ import { useTranslate } from "@tolgee/react";
 import { type FC, useCallback, useState } from "react";
 import { useImportStore } from "../../store/useImportStore";
 import { DownloadTemplate } from "../_shared/download-template/download-template.component";
+import { AIAnalyzingOverlay } from "./ai-analyzing-overlay.component";
 
 /**
  * Formatea bytes a una cadena legible (KB, MB)
@@ -127,12 +128,28 @@ export const UploadStep: FC = () => {
 			setRawData(result.data, result.headers);
 			setExtractionSource(result.extractionSource);
 			goToStep(EnumImportStep.ANALYSIS);
-		} catch {
+		} catch (error) {
+			const message = error instanceof Error ? error.message : "";
+			const isRecordLimit = message.includes("excede el límite") && message.includes("registros");
+			const isSizeLimit = message.includes("excede el límite") && message.includes("MB");
+			const isEmptyFile = message.includes("no contiene datos");
+			const isConnectionError = message.includes("Failed to fetch") || message.includes("conexión");
+
+			const toastMessage = isRecordLimit
+				? t("import_upload_error_max_records")
+				: isSizeLimit
+					? t("import_upload_error_size")
+					: isEmptyFile
+						? t("import_upload_error_empty")
+						: isConnectionError
+							? t("import_upload_error_connection")
+							: t("import_upload_error_format");
+
 			showToast(
 				configureErrorToastWithTranslation(
 					EnumErrorType.Critical,
 					t,
-					t("import_upload_error_format"),
+					toastMessage,
 					"try_again"
 				)
 			);
@@ -150,6 +167,14 @@ export const UploadStep: FC = () => {
 	]);
 
 	const hasInput = !!file || pastedText.trim().length > 0;
+
+	if (isAnalyzing) {
+		return (
+			<div className="flex flex-col gap-4 px-2 py-4 sm:p-4">
+				<AIAnalyzingOverlay />
+			</div>
+		);
+	}
 
 	return (
 		<div className="flex flex-col gap-4 px-2 py-4 sm:p-4">
@@ -236,12 +261,9 @@ export const UploadStep: FC = () => {
 				<Button
 					color="primary"
 					onPress={handleAnalyze}
-					isDisabled={!hasInput || isAnalyzing}
-					isLoading={isAnalyzing}
+					isDisabled={!hasInput}
 				>
-					{isAnalyzing
-						? t("import_upload_analyzing")
-						: t("import_upload_button_analyze")}
+					{t("import_upload_button_analyze")}
 				</Button>
 			</div>
 		</div>

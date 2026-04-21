@@ -1,0 +1,231 @@
+.ai-stage {
+  border-radius: 14px;
+  padding: 48px 24px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  background:
+    radial-gradient(420px 280px at 50% 45%, rgba(250, 209, 158, 0.12), transparent 70%),
+    radial-gradient(420px 280px at 50% 55%, rgba(96, 165, 250, 0.10), transparent 70%),
+    #fefcf5;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Orbe ── */
+.ai-orb-wrap {
+  position: relative;
+  width: 116px;
+  height: 116px;
+  display: grid;
+  place-items: center;
+}
+
+.ai-ping {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 35% 30%,
+    rgba(250, 209, 158, 0.55),
+    rgba(96, 165, 250, 0.35) 60%,
+    transparent 75%
+  );
+  opacity: 0;
+  animation: ai-ping 2.6s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+}
+
+.ai-ping--d2 {
+  animation-delay: 1.3s;
+}
+
+@keyframes ai-ping {
+  0% {
+    transform: scale(0.7);
+    opacity: 0.55;
+  }
+  70% {
+    transform: scale(1.7);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.7);
+    opacity: 0;
+  }
+}
+
+.ai-halo {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 35% 30%,
+    rgba(250, 209, 158, 0.45),
+    rgba(96, 165, 250, 0.22) 55%,
+    transparent 72%
+  );
+  filter: blur(8px);
+  animation: ai-halo-breathe 3.4s ease-in-out infinite;
+}
+
+@keyframes ai-halo-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+}
+
+.ai-orb {
+  position: relative;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 28% 26%, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0) 42%),
+    conic-gradient(
+      from 210deg at 50% 50%,
+      #fad19e 0deg,
+      #fde6c5 80deg,
+      #c5dcff 180deg,
+      #60a5fa 260deg,
+      #fad19e 360deg
+    );
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.55),
+    inset -6px -10px 20px rgba(96, 165, 250, 0.35),
+    inset 6px 8px 18px rgba(250, 209, 158, 0.55),
+    0 10px 28px -6px rgba(96, 165, 250, 0.45),
+    0 4px 14px -4px rgba(250, 209, 158, 0.5);
+  animation: ai-orb-spin 8s linear infinite;
+}
+
+@keyframes ai-orb-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.ai-orb-icon {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+/* ── Mensajes rotativos ── */
+.ai-message-wrap {
+  position: relative;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 320px;
+}
+
+.ai-message {
+  position: absolute;
+  font-family: "Merriweather", Georgia, serif;
+  font-size: 19px;
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: -0.005em;
+  color: #3f3f46;
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 0.45s ease,
+    transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+  white-space: nowrap;
+}
+
+.ai-message--active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.ai-message--exiting {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+/* ── Barra de progreso ── */
+.ai-progress {
+  width: 320px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(24, 24, 27, 0.06);
+  overflow: hidden;
+  position: relative;
+}
+
+.ai-progress__fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #fad19e 0%, #f6c08e 20%, #c8d7f5 55%, #60a5fa 100%);
+  background-size: 200% 100%;
+  width: 0%;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  box-shadow: 0 0 8px rgba(96, 165, 250, 0.35);
+  animation: ai-shimmer 2.4s linear infinite;
+}
+
+.ai-progress__fill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.55) 50%, transparent 100%);
+  animation: ai-sheen 1.8s linear infinite;
+}
+
+@keyframes ai-shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+@keyframes ai-sheen {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+/* ── Contador de pasos ── */
+.ai-step-count {
+  font-size: 12px;
+  color: #71717a;
+  font-variant-numeric: tabular-nums;
+  margin-top: -4px;
+}
+
+.ai-step-count strong {
+  color: #3f3f46;
+  font-weight: 600;
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .ai-orb,
+  .ai-ping,
+  .ai-halo,
+  .ai-progress__fill,
+  .ai-progress__fill::after {
+    animation: none;
+  }
+}

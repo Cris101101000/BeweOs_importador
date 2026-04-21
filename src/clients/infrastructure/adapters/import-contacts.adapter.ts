@@ -4,11 +4,19 @@ import type {
   IImportResult,
   IDuplicateContact,
 } from "@clients/domain/interfaces/import-contact.interface";
+import {
+  ACCEPTED_FILE_TYPES,
+  MAX_FILE_SIZE_BYTES,
+  MAX_FILE_SIZE_MB,
+} from "@clients/domain/constants/import-fields.constants";
 import { EnumClientStatus } from "@clients/domain/enums/client-status.enum";
 import type { GetClientResponseDto } from "../dtos/get-client.dto";
 import { ImportFileParserAdapter } from "./import-file-parser.adapter";
+import { ImportAIExtractorAdapter } from "./import-ai-extractor.adapter";
 import { ImportContactsMock } from "../mocks/import-contacts.mock";
 import { LocalContactsStorageService } from "../services/local-contacts-storage.service";
+
+const ACCEPTED_EXTENSIONS = ACCEPTED_FILE_TYPES.split(",");
 
 const isMockMode = process.env.REACT_APP_USE_MOCK_DATA === "true";
 
@@ -38,22 +46,39 @@ function normalizeStatus(rawStatus: string | undefined): string {
 
 export class ImportContactsAdapter implements IImportContactsPort {
   private readonly fileParser = new ImportFileParserAdapter();
+  private readonly aiExtractor = new ImportAIExtractorAdapter();
   private readonly mock = new ImportContactsMock();
   private readonly localStorage = LocalContactsStorageService.getInstance();
 
   async extractFromFile(
     file: File,
   ): Promise<{ headers: string[]; data: string[][] }> {
+    this.validateFile(file);
+
     if (this.fileParser.isStructuredFile(file)) {
       return this.fileParser.parse(file);
     }
-    return this.mock.extractFromUnstructuredFile(file);
+    return this.aiExtractor.extractFromFile(file);
+  }
+
+  private validateFile(file: File): void {
+    const extension = file.name.match(/\.[^.]+$/)?.[0]?.toLowerCase() ?? "";
+
+    if (!ACCEPTED_EXTENSIONS.includes(extension)) {
+      throw new Error(`Formato no soportado: ${extension}`);
+    }
+
+    if (file.size > MAX_FILE_SIZE_BYTES) {
+      throw new Error(
+        `El archivo excede el límite de ${MAX_FILE_SIZE_MB}MB`,
+      );
+    }
   }
 
   async extractFromText(
     text: string,
   ): Promise<{ headers: string[]; data: string[][] }> {
-    return this.mock.extractFromText(text);
+    return this.aiExtractor.extractFromText(text);
   }
 
   async detectDuplicates(
