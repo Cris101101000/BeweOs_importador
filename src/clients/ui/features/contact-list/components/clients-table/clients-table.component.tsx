@@ -469,7 +469,10 @@ export const ClientsTable: FC<ClientsTableProps> = ({
 			{/* Import contacts wizard */}
 			<ImportWizard
 				isOpen={isImportModalOpen}
-				onClose={() => setIsImportModalOpen(false)}
+				onClose={() => {
+					setIsImportModalOpen(false);
+					refetchClients();
+				}}
 			/>
 		</div>
 	);
